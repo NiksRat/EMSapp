@@ -93,7 +93,7 @@ function App() {
               <RoleBaseRoutes requiredRole={["admin", "employee"]}>
                 <EmployeeDashboard />
               </RoleBaseRoutes>
-            </PrivateRoutes>
+            </PrivateRoutes> 
           }
         >
           <Route index element={<Summary />}></Route>
