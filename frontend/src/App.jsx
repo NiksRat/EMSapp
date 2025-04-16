@@ -26,6 +26,7 @@ import SalaryReport from "./components/salary/SalaryReport";
 import LeaderDashboard from "./components/LeaderDashboard/LeaderDashboard";
 import LeaderSidebar from "./components/LeaderDashboard/LeaderSidebar";
 import LeaderSummary from "./components/LeaderDashboard/LeaderSummary";
+import LeaderComparison from "./components/LeaderDashboard/LeaderComparison";
 
 function App() {
   return (
@@ -116,7 +117,7 @@ function App() {
     </PrivateRoutes>
   }
 >
-  <Route index element={<AdminSummary />} />
+  <Route index element={<LeaderSummary />} />
   <Route path="departments" element={<DepartmentList />} />
   <Route path="add-department" element={<AddDepartment />} />
   <Route path="department/:id" element={<EditDepartment />} />
@@ -137,6 +138,7 @@ function App() {
             element={<ViewSalary />}
           ></Route>
   <Route path="salary-report" element={<SalaryReport />} />
+  <Route path="comparison" element={<LeaderComparison />} />
 </Route>
       </Routes>
     </BrowserRouter>

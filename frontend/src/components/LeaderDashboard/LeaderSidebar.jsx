@@ -63,7 +63,7 @@ const LeaderSidebar = () => {
           <span>Salary Report</span>
         </NavLink>
         <NavLink
-          to="/leader-dashboard/leave-report"
+          to="/leader-dashboard/attendance-report"
           className={({ isActive }) =>
             `${isActive ? "bg-blue-500 " : ""} flex items-center space-x-4 block py-2.5 px-4 rounded`
           }
@@ -71,6 +71,16 @@ const LeaderSidebar = () => {
           <AiOutlineFileText />
           <span>Leave Report</span>
         </NavLink>
+
+        <NavLink
+  to="/leader-dashboard/comparison"
+  className={({ isActive }) =>
+    `${isActive ? "bg-blue-500 " : ""} flex items-center space-x-4 block py-2.5 px-4 rounded`
+  }
+>
+  <FaTachometerAlt />
+  <span>Comparison</span>
+</NavLink>
       </div>
     </div>
   );

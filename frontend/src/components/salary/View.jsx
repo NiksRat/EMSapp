@@ -15,7 +15,7 @@ import { saveAs } from "file-saver";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
 
-pdfMake.vfs = pdfFonts?.default?.vfs || pdfFonts.vfs;
+pdfMake.addVirtualFileSystem(pdfFonts?.default?.vfs || pdfFonts.vfs);
 
 const View = () => {
   const [salaries, setSalaries] = useState(null);
