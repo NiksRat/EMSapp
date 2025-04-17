@@ -24,9 +24,9 @@ import Attendance from "./components/attendance/Attendance";
 import AttendanceReport from "./components/attendance/AttendanceReport";
 import SalaryReport from "./components/salary/SalaryReport";
 import LeaderDashboard from "./components/LeaderDashboard/LeaderDashboard";
-import LeaderSidebar from "./components/LeaderDashboard/LeaderSidebar";
 import LeaderSummary from "./components/LeaderDashboard/LeaderSummary";
 import LeaderComparison from "./components/LeaderDashboard/LeaderComparison";
+import RootRedirect from "./context/RootRedirect";
 
 function App() {
   return (
@@ -38,7 +38,7 @@ function App() {
           path="/admin-dashboard"
           element={
             <PrivateRoutes>
-              <RoleBaseRoutes requiredRole={["admin", "leader"]}>
+              <RoleBaseRoutes requiredRole={["admin"]}>
                 <AdminDashboard />
               </RoleBaseRoutes>
             </PrivateRoutes>
