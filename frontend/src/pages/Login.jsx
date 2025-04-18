@@ -18,6 +18,7 @@ const Login = () => {
         "http://localhost:5000/api/auth/login",
         { email, password }
       );
+      console.log(response.data); 
       if (response.data.success) {
         login(response.data.user)
         localStorage.setItem("token", response.data.token)
@@ -32,6 +33,7 @@ const Login = () => {
         }
       }
     } catch (error) {
+      console.error(error);
       if(error.response && !error.response.data.success) {
         setError(error.response.data.error)
       } else {

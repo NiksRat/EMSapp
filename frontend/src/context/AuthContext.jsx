@@ -12,6 +12,9 @@ const authContext = ({ children }) => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        }
+        if (token) {
           const response = await axios.get(
             "http://localhost:5000/api/auth/verify",
             {
@@ -25,12 +28,9 @@ const authContext = ({ children }) => {
           }
         } else {
           setUser(null);
-          setLoading(false)
         }
       } catch (error) {
-        if (error.response && !error.response.data.error) {
           setUser(null);
-        }
       } finally {
         setLoading(false);
       }
