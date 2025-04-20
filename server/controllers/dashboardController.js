@@ -74,4 +74,51 @@ const getSummary = async (req, res) => {
     }
 };
 
-export { getSummary };
+const addLeader = async (req, res) => {
+  try {
+    const { name, email, password, departmentId } = req.body;
+    
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "Email already in use" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const leaderData = {
+      name,
+      email,
+      password: hashedPassword,
+      role: "leader"
+    };
+
+    if (departmentId) {
+      const department = await Department.findById(departmentId);
+      if (!department) {
+        return res.status(404).json({ success: false, message: "Department not found" });
+      }
+      leaderData.departmentId = departmentId;
+    }
+
+    const newLeader = new User(leaderData);
+    await newLeader.save();
+
+    res.status(201).json({ success: true, message: "Leader created", leader: newLeader });
+  } catch (error) {
+    console.error("addLeader error:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const getLeaders = async (req, res) => {
+    try {
+      const leaders = await User.find({ role: "leader" });
+      res.status(200).json({ success: true, leaders });
+    } catch (error) {
+      console.error("getLeaders error:", error.message);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  };
+  
+  
+export { getSummary, addLeader, getLeaders };

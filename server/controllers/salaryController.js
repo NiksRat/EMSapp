@@ -8,7 +8,16 @@ const addSalary = async (req, res) => {
     try {
         const {employeeId, basicSalary, allowances, deductions, payDate} = req.body
 
-        const totalSalary = parseInt(basicSalary) + parseInt(allowances) - parseInt(deductions)
+        const basicSalaryNum = parseInt(basicSalary);
+        const allowancesNum = parseInt(allowances);
+        const deductionsNum = parseInt(deductions);
+    
+        // Проверка на NaN
+        if (isNaN(basicSalaryNum) || isNaN(allowancesNum) || isNaN(deductionsNum)) {
+          return res.status(400).json({ success: false, error: "Invalid input values" });
+        }
+    
+        const totalSalary = basicSalaryNum + allowancesNum - deductionsNum;
 
         const newSalary = new Salary({
             employeeId,
@@ -29,28 +38,20 @@ const addSalary = async (req, res) => {
 }
 
 const getSalary = async (req, res) => {
-    try {
-        const {id, role} = req.params;
-        
-        let salary
-        if(role === "admin") {
-          salary = await Salary.find({employeeId: employee._id})
-          .populate({
-            path: "employeeId",
-            populate: { path: "department userId" }
-          });
-        } else {
-            const employee = await Employee.findOne({userId: id})
-            salary = await Salary.find({employeeId: employee._id})
-  .populate({
-    path: "employeeId",
-    populate: { path: "department userId" }
-  });
-        }
-        return res.status(200).json({success: true, salary})
-    } catch(error) {
-        return res.status(500).json({success: false, error: "salary get server error"})
-    }
+  try {
+      const {id, role} = req.params;
+      
+      let salary
+      if(role === "admin") {
+          salary = await Salary.find({employeeId: id}).populate('employeeId', 'employeeId')
+      } else {
+          const employee = await Employee.findOne({userId: id})
+          salary = await Salary.find({employeeId: employee._id}).populate('employeeId', 'employeeId')
+      }
+      return res.status(200).json({success: true, salary})
+  } catch(error) {
+      return res.status(500).json({success: false, error: "salary get server error"})
+  }
 }
 
 const salaryReport = async (req, res) => {

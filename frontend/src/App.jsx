@@ -27,6 +27,8 @@ import LeaderDashboard from "./components/LeaderDashboard/LeaderDashboard";
 import LeaderSummary from "./components/LeaderDashboard/LeaderSummary";
 import LeaderComparison from "./components/LeaderDashboard/LeaderComparison";
 import RootRedirect from "./context/RootRedirect";
+import LeaderList from "./components/dashboard/LeaderList";
+import AddLeader from "./components/dashboard/AddLeader";
 
 function App() {
   return (
@@ -86,6 +88,8 @@ function App() {
           <Route path="/admin-dashboard/attendance" element={<Attendance />}></Route>
           <Route path="/admin-dashboard/attendance-report" element={<AttendanceReport />}></Route>
           <Route path="/admin-dashboard/salary-report" element={<SalaryReport />} />
+          <Route path="/admin-dashboard/leaders" element={<LeaderList />} />
+          <Route path="/admin-dashboard/add-leader" element={<AddLeader />} />
         </Route>
         <Route
           path="/employee-dashboard"

@@ -95,10 +95,10 @@ const Add = () => {
                 >
                   <option value="">Select Employee</option>
                   {employees.map((emp) => (
-                    <option key={emp._id} value={emp._id}>
-                      {emp.employeeId}
-                    </option>
-                  ))}
+  <option key={emp._id} value={emp._id}>
+    {emp.userId?.name}
+  </option>
+))}
                 </select>
               </div>
 

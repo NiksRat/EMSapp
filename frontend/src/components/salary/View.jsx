@@ -22,18 +22,18 @@ const View = () => {
   const [filteredSalaries, setFilteredSalaries] = useState(null);
   const { id } = useParams();
   let sno = 1;
-  const [startDate, setStartDate] = useState(null); // Add state for start date
-  const [endDate, setEndDate] = useState(null); // Add state for end date
+  const [startDate, setStartDate] = useState(null); 
+  const [endDate, setEndDate] = useState(null); 
   const { user } = useAuth();
 
   const fetchSalareis = async () => {
     try {
       const query = new URLSearchParams();
       if (startDate) {
-        query.append("startDate", startDate); // Send startDate to the backend
+        query.append("startDate", startDate); 
       }
       if (endDate) {
-        query.append("endDate", endDate); // Send endDate to the backend
+        query.append("endDate", endDate); 
       }
       const response = await axios.get(
         `http://localhost:5000/api/salary/${id}/${user.role}?${query.toString()}`,
