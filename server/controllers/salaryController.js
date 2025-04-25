@@ -30,7 +30,12 @@ const addSalary = async (req, res) => {
 
         await newSalary.save()
 
-        return res.status(200).json({success: true})
+        const populatedSalary = await Salary.findById(salary._id).populate({
+          path: 'employeeId',
+          select: 'name department',  
+        });
+
+        return res.status(200).json({success: true, salary: populatedSalary,})
 
     } catch(error) {
         return res.status(500).json({success: false, error: "salary add server error"})
@@ -42,7 +47,7 @@ const getSalary = async (req, res) => {
       const {id, role} = req.params;
       
       let salary
-      if(role === "admin") {
+      if(role === "admin" || role === "leader") {
           salary = await Salary.find({employeeId: id}).populate('employeeId', 'employeeId')
       } else {
           const employee = await Employee.findOne({userId: id})
@@ -55,52 +60,56 @@ const getSalary = async (req, res) => {
 }
 
 const salaryReport = async (req, res) => {
-    try {
-      const { payDate, limit = 5, skip = 0 } = req.query;
-      const query = {};
+  try {
+    const { payDate, limit = 5, skip = 0 } = req.query;
+    const query = {};
 
-      if (payDate) {
-        const start = new Date(payDate);
-        const end = new Date(payDate);
-        end.setDate(end.getDate() + 1); 
-      
-        query.payDate = { $gte: start, $lt: end };
-      }
-  
-      const salaryData = await Salary.find(query)
-        .populate({
-          path: "employeeId",
-          populate: ["department", "userId"]
-        })
-        .sort({ payDate: -1 })
-        .skip(parseInt(skip))
-        .limit(parseInt(limit));
-  
-      const groupData = salaryData.reduce((result, record) => {
-        const date = record.payDate.toISOString().split('T')[0]; 
-  
-        if (!result[date]) {
-          result[date] = [];
-        }
-  
-        result[date].push({
-          employeeId: record.employeeId.employeeId,
-          employeeName: record.employeeId.userId?.name || "N/A",
-          departmentName: record.employeeId.department?.dep_name || "N/A",
-          basicSalary: record.basicSalary,
-          allowances: record.allowances || 0,
-          deductions: record.deductions || 0,
-          netSalary: record.netSalary
-        });
-  
-        return result;
-      }, {});
-  
-      return res.status(200).json({ success: true, groupData });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: error.message });
+    if (payDate) {
+      const start = new Date(payDate);
+      const end = new Date(payDate);
+      end.setDate(end.getDate() + 1); 
+    
+      query.payDate = { $gte: start, $lt: end };
     }
-  };
+
+    const salaryData = await Salary.find(query)
+    .populate({
+      path: "employeeId",
+      populate: [
+        { path: "userId", select: "name" }, 
+        { path: "department", select: "dep_name" }  
+      ]
+    })
+    .sort({ payDate: -1 })
+    .skip(parseInt(skip))
+    .limit(parseInt(limit));
+
+
+    const groupData = salaryData.reduce((result, record) => {
+      const date = record.payDate.toISOString().split('T')[0]; 
+
+      if (!result[date]) {
+        result[date] = [];
+      }
+
+      result[date].push({
+        employeeId: record.employeeId.employeeId,
+        employeeName: record.employeeId.userId ? record.employeeId.userId.name : "N/A",
+        departmentName: record.employeeId.department ? record.employeeId.department.dep_name : "N/A",
+        basicSalary: record.basicSalary,
+        allowances: record.allowances || 0,
+        deductions: record.deductions || 0,
+        netSalary: record.netSalary
+      });
+
+      return result;
+    }, {});
+
+    return res.status(200).json({ success: true, groupData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
 
 export {addSalary, getSalary, salaryReport}

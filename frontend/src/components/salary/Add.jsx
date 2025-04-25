@@ -111,6 +111,7 @@ const Add = () => {
                 <input
                   type="number"
                   name="basicSalary"
+                  min="0"
                   onChange={handleChange}
                   placeholder="basix salary"
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
@@ -126,6 +127,7 @@ const Add = () => {
                 <input
                   type="number"
                   name="allowances"
+                  min="0"
                   onChange={handleChange}
                   placeholder="allowances"
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
@@ -139,6 +141,7 @@ const Add = () => {
                 <input
                   type="number"
                   name="deductions"
+                  min="0"
                   onChange={handleChange}
                   placeholder="deductions"
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"

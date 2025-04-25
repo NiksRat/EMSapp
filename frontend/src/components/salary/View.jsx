@@ -12,19 +12,20 @@ import {
   TableCell,
 } from "docx";
 import { saveAs } from "file-saver";
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
-
-pdfMake.addVirtualFileSystem(pdfFonts?.default?.vfs || pdfFonts.vfs);
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = window.pdfMake.vfs
 
 const View = () => {
   const [salaries, setSalaries] = useState(null);
+  const [employee2, setEmployee] = useState(null);
   const [filteredSalaries, setFilteredSalaries] = useState(null);
   const { id } = useParams();
   let sno = 1;
   const [startDate, setStartDate] = useState(null); 
   const [endDate, setEndDate] = useState(null); 
   const { user } = useAuth();
+
 
   const fetchSalareis = async () => {
     try {
@@ -43,6 +44,7 @@ const View = () => {
           },
         }
       );
+      console.log("Ответ от сервера:", response.data); 
       if (response.data.success) {
         setSalaries(response.data.salary);
         setFilteredSalaries(response.data.salary);
@@ -51,6 +53,24 @@ const View = () => {
       if (error.response && !error.response.data.success) {
         alert(error.message);
       }
+    }
+  };
+
+  const fetchEmployee = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/employee/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      const employeeData = response.data.employee;
+      console.log("ФИО сотрудника:", employeeData.userId.name);
+      console.log("Подразделение:", employeeData.department.dep_name);
+  
+      setEmployee(employeeData);
+    } catch (error) {
+      console.error("Ошибка при получении данных сотрудника:", error);
     }
   };
 
@@ -72,6 +92,8 @@ const View = () => {
     if (!salary) return;
 
     const employee = salary.employeeId;
+
+    
     const payDate = new Date(salary.payDate).toLocaleDateString("ru-RU");
 
     if (format === "word") {
@@ -131,13 +153,13 @@ const View = () => {
     
           {
             columns: [
-              { text: `${employee.userId?.name || "N/A"}, таб. №${employee.employeeId}`, style: "info" },
+              { text: `${employee2?.userId?.name || "N/A"}, таб. №${employee.employeeId}`, style: "info" },
               { text: `Расчетная дата: ${payDate}`, alignment: "right", style: "info" }
             ]
           },
           {
             columns: [
-              { text: `Подразделение: ${employee.department?.dep_name || "N/A"}`, style: "info" },
+              { text: `Подразделение: ${employee2?.department?.dep_name || "N/A"}`, style: "info" },
               { text: `Оклад/Тариф: ${salary.basicSalary} руб.`, alignment: "right", style: "info" }
             ]
           },
@@ -218,11 +240,11 @@ const View = () => {
   
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
           <tr>
-            <td><b>${employee.userId?.name || "N/A"}, таб. №${employee.employeeId}</b></td>
+            <td><b>${employee2?.userId?.name || "N/A"}, таб. №${employee.employeeId}</b></td>
             <td style="text-align: right;"><b>Расчетная дата:</b> ${payDate}</td>
           </tr>
           <tr>
-            <td><b>Подразделение:</b> ${employee.department?.dep_name || "N/A"}</td>
+            <td><b>Подразделение:</b> ${employee2?.department?.dep_name || "N/A"}</td>
             <td style="text-align: right;"><b>Оклад/Тариф:</b> ${salary.basicSalary} руб.</td>
           </tr>
         </table>
@@ -299,7 +321,8 @@ const View = () => {
 
   useEffect(() => {
     fetchSalareis();
-  }, [startDate, endDate]); 
+    fetchEmployee();
+  }, [startDate, endDate, id]); 
 
   return (
     <>
@@ -351,13 +374,13 @@ const View = () => {
                     key={salary._id}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-6 py-3">{sno++}</td>
-                    <td className="px-6 py-3">{salary.employeeId.employeeId}</td>
-                    <td className="px-6 py-3">{salary.basicSalary}</td>
-                    <td className="px-6 py-3">{salary.allowances}</td>
-                    <td className="px-6 py-3">{salary.deductions}</td>
-                    <td className="px-6 py-3">{salary.netSalary}</td>
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-3 font-semibold text-white">{sno++}</td>
+                    <td className="px-6 py-3 font-semibold text-white">{salary.employeeId.employeeId}</td>
+                    <td className="px-6 py-3 font-semibold text-white">{salary.basicSalary}</td>
+                    <td className="px-6 py-3 font-semibold text-white">{salary.allowances}</td>
+                    <td className="px-6 py-3 font-semibold text-white">{salary.deductions}</td>
+                    <td className="px-6 py-3 font-semibold text-white">{salary.netSalary}</td>
+                    <td className="px-6 py-3 font-semibold text-white">
                       {new Date(salary.payDate).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-3 flex gap-2">

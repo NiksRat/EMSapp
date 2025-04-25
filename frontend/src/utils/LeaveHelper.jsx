@@ -7,7 +7,7 @@ export const columns = [
     width: "70px",
   },
   {
-    name: "Emp ID",
+    name: "Card ID",
     selector: (row) => row.employeeId,
     width: "110px",
   },

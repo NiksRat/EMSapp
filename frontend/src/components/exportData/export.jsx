@@ -7,6 +7,18 @@ const ExportCSV = ({ reportData, fileName }) => {
   const [isVisible, setIsVisible] = useState(false);
   const dropdownRef = useRef(null);
 
+  // Function to get the current timestamp in the desired format
+  const getFormattedTimestamp = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+  };
+
   const handleExport = () => {
     const dataToExport = Array.isArray(reportData)
       ? reportData.slice(0, limit === "Все" ? reportData.length : limit)
@@ -19,15 +31,20 @@ const ExportCSV = ({ reportData, fileName }) => {
       type:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
-    FileSaver.saveAs(data, fileName + ".xlsx");
+
+    // Append the current timestamp to the filename
+    const timestamp = getFormattedTimestamp();
+    const fullFileName = `${fileName}_${timestamp}.xlsx`;
+
+    FileSaver.saveAs(data, fullFileName);
   };
 
   const handleSelectLimit = (count) => {
     setLimit(count);
-    setIsVisible(false); // закрыть меню
+    setIsVisible(false); // close the dropdown menu
   };
 
-  // Закрытие меню при клике вне
+  // Close the dropdown menu if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

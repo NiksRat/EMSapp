@@ -26,7 +26,7 @@ const getLeave = async (req, res) => {
     try {
         const {id, role} = req.params;
         let leaves
-        if(role === "admin") {
+        if(role === "admin" || role === "leader") {
             leaves = await Leave.find({employeeId: id})
         } else {
             const employee = await Employee.findOne({userId: id})

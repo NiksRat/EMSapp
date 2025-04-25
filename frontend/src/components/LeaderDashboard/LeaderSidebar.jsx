@@ -36,15 +36,6 @@ const LeaderSidebar = () => {
           <span>Employees</span>
         </NavLink>
         <NavLink
-          to="/leader-dashboard/departments"
-          className={({ isActive }) =>
-            `${isActive ? "bg-blue-500 " : ""} flex items-center space-x-4 block py-2.5 px-4 rounded`
-          }
-        >
-          <FaBuilding />
-          <span>Departments</span>
-        </NavLink>
-        <NavLink
           to="/leader-dashboard/attendance"
           className={({ isActive }) =>
             `${isActive ? "bg-blue-500 " : ""} flex items-center space-x-4 block py-2.5 px-4 rounded`

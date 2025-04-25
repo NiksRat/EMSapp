@@ -14,7 +14,7 @@ export const columns = [
     width: "100px",
   },
   {
-    name: "Emp ID",
+    name: "Card ID",
     selector: (row) => row.employeeId,
     sortable: true,
     width: "100px",

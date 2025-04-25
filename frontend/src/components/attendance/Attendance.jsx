@@ -42,6 +42,7 @@ const Attendance = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchAttendance();
   }, []);
@@ -57,6 +58,13 @@ const Attendance = () => {
     return <div>Loading ...</div>;
   }
 
+  const formattedDate = new Date().toLocaleDateString("en-GB", {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   return (
     <div className="p-6">
       <div className="text-center">
@@ -65,12 +73,13 @@ const Attendance = () => {
       <div className="flex justify-between items-center mt-4">
         <input
           type="text"
-          placeholder="Seach By Dep Name"
+          placeholder="Search By Dep Name"
           className="px-4 py-0.5 border"
           onChange={handleFilter}
         />
-        <p className="text-2xl">
-          Mark Employees for <span className="font-bold underline">{new Date().toISOString().split("T")[0]}{" "}</span>
+        <p className="text-2xl font-medium">
+          Mark Employees for{" "}
+          <span className="font-semibold text-teal-600">{formattedDate}</span>
         </p>
         <Link
           to="/admin-dashboard/attendance-report"

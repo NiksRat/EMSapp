@@ -26,6 +26,9 @@ const Edit = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
+        const departmentsData = await fetchDepartments();
+        setDepartments(departmentsData);
+
         const responnse = await axios.get(
           `http://localhost:5000/api/employee/${id}`,
           {
@@ -42,7 +45,7 @@ const Edit = () => {
             maritalStatus: employee.maritalStatus,
             designation: employee.designation,
             salary: employee.salary,
-            department: employee.department
+            department: employee.department._id
           }));
         }
       } catch (error) {

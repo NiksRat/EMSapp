@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import  ExportCSV  from "../exportData/export";
+import ExportCSV from "../exportData/export";
 
 const AttendanceReport = () => {
   const [report, setReport] = useState({});
@@ -25,7 +25,7 @@ const AttendanceReport = () => {
         }
       );
       if (responnse.data.success) {
-        if (skip == 0) {
+        if (skip === 0) {
           setReport(responnse.data.groupData);
         } else {
           setReport((prevData) => ({
@@ -39,6 +39,7 @@ const AttendanceReport = () => {
       alert(error.message);
     }
   };
+
   useEffect(() => {
     fetchReport();
   }, [skip, dateFilter]);
@@ -46,57 +47,68 @@ const AttendanceReport = () => {
   const handleLoadmore = () => {
     setSkip((prevSkip) => prevSkip + limit);
   };
+
   return (
-    <div className="min-h-screen p-10 bg-white">
-      <h2 className="text-center text-2xl font-bold">Attendance Report</h2>
-      <div className="flex justify-end mb-4">
+    <div className="min-h-screen p-6 bg-gray-50">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-gray-800">📋 Attendance Report</h2>
         <ExportCSV reportData={report} fileName="Attendance_Report" />
       </div>
-      <div>
-        <h2 className="text-xl font-semibold">Filter by Date</h2>
-        <input type="date" className="border bg-gray-100" 
-        onChange={(e) => {
-          setDateFilter(e.target.value);
-          setSkip(0)
-        }}/>
+
+      <div className="mb-6">
+        <label className="block mb-2 text-lg font-medium text-gray-700">📅 Filter by Date:</label>
+        <input
+          type="date"
+          className="border p-2 rounded bg-white shadow"
+          onChange={(e) => {
+            setDateFilter(e.target.value);
+            setSkip(0);
+          }}
+        />
       </div>
+
       {loading ? (
-        <div> Loading...</div>
+        <div className="text-center text-lg text-gray-600">Loading...</div>
       ) : (
         Object.entries(report).map(([date, record]) => (
-          <div className="mt-4 border-b" key={date}>
-            <h2 className="text-xl font-semibold">{date}</h2>
-            <table className="" border="1" cellPadding="10">
-              <thead>
-                <tr>
-                  <th>S No</th>
-                  <th>Employee ID</th>
-                  <th>Name</th>
-                  <th>Department</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {record.map((data, i) => (
-                  <tr key={data.employeeId}>
-                    <td>{i + 1}</td>
-                    <td>{data.employeeId}</td>
-                    <td>{data.employeeName}</td>
-                    <td>{data.departmentName}</td>
-                    <td>{data.status}</td>
+          <div key={date} className="bg-white shadow-md rounded-lg mb-8 p-6 border">
+            <h3 className="text-xl font-semibold text-indigo-700 mb-4">📆 {date}</h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-left text-sm border-collapse">
+                <thead className="bg-indigo-600 text-white">
+                  <tr>
+                    <th className="p-2 border">S No</th>
+                    <th className="p-2 border">Card ID</th>
+                    <th className="p-2 border">Name</th>
+                    <th className="p-2 border">Department</th>
+                    <th className="p-2 border">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {record.map((data, i) => (
+                    <tr key={`${data.employeeId}-${i}`} className="hover:bg-gray-50">
+                      <td className="p-2 border">{i + 1}</td>
+                      <td className="p-2 border">{data.employeeId}</td>
+                      <td className="p-2 border">{data.employeeName}</td>
+                      <td className="p-2 border">{data.departmentName}</td>
+                      <td className="p-2 border">{data.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ))
       )}
-      <button
-        className="px-4 py-2 border bg-gray-100 text-lg font-semibold"
-        onClick={handleLoadmore}
-      >
-        Load More
-      </button>
+
+      <div className="text-center mt-6">
+        <button
+          className="px-6 py-2 bg-indigo-600 text-white font-medium rounded hover:bg-indigo-700 shadow"
+          onClick={handleLoadmore}
+        >
+          ⬇️ Load More
+        </button>
+      </div>
     </div>
   );
 };

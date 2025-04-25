@@ -14,6 +14,10 @@ import {
   Legend,
 } from "recharts";
 import html2canvas from "html2canvas";
+import pdfMake from "pdfmake/build/pdfmake";
+import { Document, Packer, Paragraph, TextRun } from "docx";
+
+pdfMake.vfs = window.pdfMake.vfs;
 
 const COLORS = [
   "#0088FE", "#00C49F", "#FFBB28", "#FF8042",
@@ -49,7 +53,6 @@ const LeaderComparison = () => {
   const exportChartToImage = (chartId) => {
     setExporting(true); // Блокируем кнопку до завершения экспорта
 
-    // Скрываем кнопку на момент экспорта
     const chartElement = document.getElementById(chartId);
     const button = chartElement.querySelector("button");
     if (button) button.style.display = "none"; // Скрываем кнопку
@@ -65,12 +68,133 @@ const LeaderComparison = () => {
     });
   };
 
+  const exportToPDF = () => {
+    const barChartContainer = document.getElementById('bar-chart-container');
+    const pieChartContainer = document.getElementById('pie-chart-container');
+    
+    Promise.all([
+      html2canvas(barChartContainer),
+      html2canvas(pieChartContainer)
+    ]).then(([barCanvas, pieCanvas]) => {
+      const barImage = barCanvas.toDataURL("image/png");
+      const pieImage = pieCanvas.toDataURL("image/png");
+  
+      const docDefinition = {
+        content: [
+          { text: "Сравнение департаментов", style: "header", alignment: "center" },
+          { text: 'ОАО "МТЗ"', alignment: "center", margin: [0, 0, 0, 10] },
+          {
+            table: {
+              widths: ['*', 'auto', 'auto', '*'],
+              body: [
+                ['Департамент', 'Сотрудники', 'Отпуска', 'Общая выплаченная зарплата ($)'],
+                ...comparisonData.map(item => [
+                  item.department,
+                  item.employees,
+                  item.leaves,
+                  item.totalSalary.toFixed(2)
+                ])
+              ]
+            },
+            layout: 'lightHorizontalLines'
+          },
+          { text: "Количество сотрудников по департаментам", style: "subHeader" },
+          { image: barImage, width: 500, height: 300 },
+          { text: "Доля зарплаты по департаментам", style: "subHeader" },
+          { image: pieImage, width: 500, height: 300 },
+        ],
+        styles: {
+          header: { fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+          subHeader: { fontSize: 14, margin: [0, 10, 0, 5] }
+        },
+        defaultStyle: {
+          fontSize: 12
+        }
+      };
+  
+      pdfMake.createPdf(docDefinition).download("DepartmentComparison.pdf");
+    });
+  };
+
+  const exportToWord = () => {
+    const barChartContainer = document.getElementById('bar-chart-container');
+    const pieChartContainer = document.getElementById('pie-chart-container');
+    
+    Promise.all([
+      html2canvas(barChartContainer),
+      html2canvas(pieChartContainer)
+    ]).then(([barCanvas, pieCanvas]) => {
+      const barImage = barCanvas.toDataURL("image/png");
+      const pieImage = pieCanvas.toDataURL("image/png");
+  
+      const htmlContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office'
+              xmlns:w='urn:schemas-microsoft-com:office:word'
+              xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'><title>Сравнение департаментов</title></head>
+        <body style="font-family: Arial; font-size: 12pt;">
+          <h3 style="text-align: center;">Сравнение департаментов</h3>
+          <h4 style="text-align: center;">ОАО "МТЗ"</h4>
+  
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <th>Департамент</th>
+              <th>Сотрудники</th>
+              <th>Отпуска</th>
+              <th>Общая выплаченная зарплата</th>
+            </tr>
+            ${comparisonData.map(item => `
+              <tr>
+                <td>${item.department}</td>
+                <td>${item.employees}</td>
+                <td>${item.leaves}</td>
+                <td>${item.totalSalary.toFixed(2)} руб.</td>
+              </tr>
+            `).join('')}
+          </table>
+  
+          <br/>
+  
+          <h4 style="text-align: center;">Количество сотрудников по департаментам</h4>
+          <img src="${barImage}" style="display: block; margin: 0 auto;" />
+  
+          <br/>
+  
+          <h4 style="text-align: center;">Доля зарплаты по департаментам</h4>
+          <img src="${pieImage}" style="display: block; margin: 0 auto;" />
+        </body>
+        </html>
+      `;
+  
+      const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+      const fileName = "DepartmentComparison.doc";
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  };
+
   return (
     <div className="p-6">
       <h3 className="text-2xl font-bold mb-4">Сравнение департаментов</h3>
 
       <div className="flex justify-end mb-4">
         <ExportDepartmentTable data={comparisonData} />
+        <button
+          onClick={exportToPDF}
+          className="px-4 py-2 border bg-gray-100 text-lg font-semibold"
+        >
+          Экспортировать в PDF
+        </button>
+        <button
+          onClick={exportToWord}
+          className="ml-4 px-4 py-2 border bg-gray-100 text-lg font-semibold"
+        >
+          Экспортировать в Word
+        </button>
       </div>
 
       <div className="overflow-x-auto mb-10">
@@ -98,9 +222,7 @@ const LeaderComparison = () => {
         </table>
       </div>
 
-      {/* Диаграммы */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Bar Chart */}
         <div className="bg-white rounded shadow p-4" id="bar-chart-container">
           <h4 className="text-lg font-semibold mb-2">Количество сотрудников по департаментам</h4>
           <ResponsiveContainer width="100%" height={300}>
@@ -111,16 +233,8 @@ const LeaderComparison = () => {
               <Bar dataKey="employees" fill="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
-          <button
-            className="mt-4 px-4 py-2 border bg-gray-100 text-lg font-semibold"
-            onClick={() => exportChartToImage("bar-chart-container")}
-            disabled={exporting}
-          >
-            {exporting ? "Экспорт..." : "Экспортировать диаграмму"}
-          </button>
         </div>
 
-        {/* Pie Chart */}
         <div className="bg-white rounded shadow p-4" id="pie-chart-container">
           <h4 className="text-lg font-semibold mb-2">Доля зарплаты по департаментам</h4>
           <ResponsiveContainer width="100%" height={300}>
@@ -142,13 +256,6 @@ const LeaderComparison = () => {
               <Legend />
             </PieChart>
           </ResponsiveContainer>
-          <button
-            className="mt-4 px-4 py-2 border bg-gray-100 text-lg font-semibold"
-            onClick={() => exportChartToImage("pie-chart-container")}
-            disabled={exporting}
-          >
-            {exporting ? "Экспорт..." : "Экспортировать диаграмму"}
-          </button>
         </div>
       </div>
     </div>

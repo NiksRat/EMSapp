@@ -8,18 +8,33 @@ const Add = () => {
 
     const [leave, setLeave] = useState({
         userId: user._id,
+        startDate: "",
     })
 
     const navigate = useNavigate()
 
-  const handleChange = (e) => {
-    const {name, value} = e.target
-    setLeave((prevState) => ({...prevState, [name] : value}))
-  };
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+    
+      setLeave((prevState) => {
+        const updatedLeave = { ...prevState, [name]: value };
+    
+        if (name === "startDate" && updatedLeave.endDate) {
+          if (value >= updatedLeave.endDate) {
+            updatedLeave.endDate = ""; 
+          }
+        }
+    
+        return updatedLeave;
+      });
+    };
+  const today = new Date().toISOString().split("T")[0];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (leave.startDate === leave.endDate) {
+      return alert("Start Date and End Date cannot be the same");
+    }
     try {
         const response = await axios.post(
           `http://localhost:5000/api/leave/add`,leave,
@@ -69,6 +84,7 @@ const Add = () => {
               <input
                 type="date"
                 name="startDate"
+                min={today}
                 onChange={handleChange}
                 className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 required
@@ -83,6 +99,7 @@ const Add = () => {
               <input
                 type="date"
                 name="endDate"
+                min={leave.startDate || today}
                 onChange={handleChange}
                 className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 required
