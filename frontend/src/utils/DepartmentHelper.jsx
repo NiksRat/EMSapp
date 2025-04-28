@@ -1,30 +1,32 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // <-- добавляем переводчик
 
 export const columns = [
   {
-    name: "S No",
+    name: "#️⃣",
     selector: (row) => row.sno,
   },
   {
-    name: "Department Name",
+    name: "🏢",
     selector: (row) => row.dep_name,
     sortable: true
   },
   {
-    name: "Action",
+    name: "⚙️",
     selector: (row) => row.action,
   },
 ];
 
 export const DepartmentButtons = ({ Id, onDepartmentDelete }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm("Do you want to delte?");
-    if (confirm) {
+    const confirmDelete = window.confirm(t("Do you want to delete?"));
+    if (confirmDelete) {
       try {
-        const responnse = await axios.delete(
+        const response = await axios.delete(
           `http://localhost:5000/api/department/${id}`,
           {
             headers: {
@@ -32,29 +34,30 @@ export const DepartmentButtons = ({ Id, onDepartmentDelete }) => {
             },
           }
         );
-        if (responnse.data.success) {
+        if (response.data.success) {
           onDepartmentDelete();
         }
       } catch (error) {
         if (error.response && !error.response.data.success) {
-          alert(error.response.data.error);
+          alert(error.response.data.error || t("An error occurred"));
         }
       }
     }
   };
+
   return (
     <div className="flex space-x-3">
       <button
-        className="px-3 py-1 bg-teal-600  text-white"
+        className="px-3 py-1 bg-teal-600 text-white"
         onClick={() => navigate(`/admin-dashboard/department/${Id}`)}
       >
-        Edit
+        {t("Edit")}
       </button>
       <button
         className="px-3 py-1 bg-red-600 text-white"
         onClick={() => handleDelete(Id)}
       >
-        Delete
+        {t("Delete")}
       </button>
     </div>
   );

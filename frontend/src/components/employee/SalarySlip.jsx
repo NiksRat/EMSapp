@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const SalarySlip = () => {
   const { id } = useParams(); // Получаем id сотрудника из URL
+  const { t } = useTranslation(); // Получаем функцию для перевода
   const [salarySlip, setSalarySlip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,11 +23,11 @@ const SalarySlip = () => {
         if (response.data.success) {
           setSalarySlip(response.data.salarySlip); // Устанавливаем данные расчетного листка
         } else {
-          setError('Не удалось получить расчетный листок');
+          setError(t('salarySlipError')); // Используем перевод для ошибки
         }
       } catch (err) {
         console.error('Error fetching salary slip:', err); // Логируем ошибку
-        setError('Ошибка при загрузке расчетного листка');
+        setError(t('salarySlipFetchError')); // Используем перевод для ошибки
       } finally {
         setLoading(false);
       }
@@ -34,34 +36,36 @@ const SalarySlip = () => {
     if (id) {
       fetchSalarySlip(); // Загружаем данные расчетного листка при изменении id
     }
-  }, [id]); // Перезапускаем запрос при изменении id
+  }, [id, t]); // Добавляем t как зависимость
 
   // Если данные все еще загружаются
-  if (loading) return <div className="text-center">Загрузка...</div>;
+  if (loading) return <div className="text-center">{t('loading')}</div>;
 
   // Если произошла ошибка
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   // Если расчетный листок не был найден
-  if (!salarySlip) return <div className="text-center">Расчетный листок не найден</div>;
+  if (!salarySlip) return <div className="text-center">{t('salarySlipNotFound')}</div>;
 
   // Проверка на наличие всех данных для безопасного рендеринга
   if (!salarySlip.name || !salarySlip.position) {
-    return <div className="text-center">Некоторые данные расчетного листка отсутствуют</div>;
+    return <div className="text-center">{t('missingData')}</div>;
   }
 
   // Рендерим данные расчетного листка
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-md shadow-md">
-      <h1 className="text-2xl font-bold mb-8 text-center">Расчетный листок для {salarySlip.name}</h1>
+      <h1 className="text-2xl font-bold mb-8 text-center">
+        {t('salarySlipFor')} {salarySlip.name}
+      </h1>
       <div className="space-y-4">
-        <p><strong>Должность:</strong> {salarySlip.position}</p>
-        <p><strong>Отдел:</strong> {salarySlip.department}</p>
-        <p><strong>Основная зарплата:</strong> {salarySlip.baseSalary}</p>
-        <p><strong>Доплаты:</strong> {salarySlip.allowances}</p>
-        <p><strong>Удержания:</strong> {salarySlip.deductions}</p>
-        <p><strong>Чистая зарплата:</strong> {salarySlip.netSalary}</p>
-        <p><strong>Дата выплаты:</strong> {new Date(salarySlip.payDate).toLocaleDateString()}</p>
+        <p><strong>{t('position')}:</strong> {salarySlip.position}</p>
+        <p><strong>{t('department')}:</strong> {salarySlip.department}</p>
+        <p><strong>{t('baseSalary')}:</strong> {salarySlip.baseSalary}</p>
+        <p><strong>{t('allowances')}:</strong> {salarySlip.allowances}</p>
+        <p><strong>{t('deductions')}:</strong> {salarySlip.deductions}</p>
+        <p><strong>{t('netSalary')}:</strong> {salarySlip.netSalary}</p>
+        <p><strong>{t('payDate')}:</strong> {new Date(salarySlip.payDate).toLocaleDateString()}</p>
       </div>
     </div>
   );

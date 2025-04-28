@@ -1,41 +1,44 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { useTranslation } from "react-i18next";
+
 
 export const columns = [
   {
-    name: "S No",
+    name: "#️⃣",  // Номер
     selector: (row) => row.sno,
     width: "70px",
   },
   {
-    name: "Name",
+    name: "👤",  // Имя
     selector: (row) => row.name,
     sortable: true,
     width: "100px",
   },
   {
-    name: "Image",
+    name: "🖼️",  // Фото
     selector: (row) => row.profileImage,
     width: "90px",
   },
   {
-    name: "Department",
+    name: "🏢",  // Отдел
     selector: (row) => row.dep_name,
     width: "120px",
   },
   {
-    name: "DOB",
+    name: "🎂",  // Дата рождения
     selector: (row) => row.dob,
     sortable: true,
     width: "130px",
   },
   {
-    name: "Action",
+    name: "⚙️",  // Действия
     selector: (row) => row.action,
-    center: "true",
+    center: true,
   },
 ];
+
 
 export const fetchDepartments = async () => {
   let departments;
@@ -68,7 +71,7 @@ export const getEmployees = async (id) => {
         },
       }
     );
-    console.log(responnse)
+    console.log(responnse);
     if (responnse.data.success) {
       employees = responnse.data.employees;
     }
@@ -83,6 +86,7 @@ export const getEmployees = async (id) => {
 export const EmployeeButtons = ({ Id }) => {
   const navigate = useNavigate();
   const { user } = useAuth();  // Get current user (assumes role is available)
+  const { t } = useTranslation();  // Translation hook
 
   // Base path depends on the role
   const basePath = user?.role === "admin" ? "/admin-dashboard" : "/leader-dashboard";
@@ -93,27 +97,26 @@ export const EmployeeButtons = ({ Id }) => {
         className="px-3 py-1 bg-teal-600 text-white"
         onClick={() => navigate(`${basePath}/employees/${Id}`)}
       >
-        View
+        {t("view")}
       </button>
       <button
         className="px-3 py-1 bg-blue-600 text-white"
         onClick={() => navigate(`${basePath}/employees/edit/${Id}`)}
       >
-        Edit
+        {t("edit")}
       </button>
       <button
         className="px-3 py-1 bg-yellow-600 text-white"
         onClick={() => navigate(`${basePath}/employees/salary/${Id}`)}
       >
-        Salary
+        {t("salary")}
       </button>
       <button
         className="px-3 py-1 bg-red-600 text-white"
         onClick={() => navigate(`${basePath}/employees/leaves/${Id}`)}
       >
-        Leave
+        {t("leave")}
       </button>
     </div>
   );
 };
-

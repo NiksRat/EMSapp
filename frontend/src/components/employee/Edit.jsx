@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { fetchDepartments } from "../../utils/EmployeeHelper";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const Edit = () => {
+  const { t } = useTranslation();
   const [employee, setEmployee] = useState({
     name: "",
     maritalStatus: "",
@@ -90,20 +92,20 @@ const Edit = () => {
     <>
       {departments && employee ? (
         <div className="max-w-4xl mx-auto mt-10 bg-white p-8 rounded-md shadow-md">
-          <h2 className="text-2xl font-bold mb-6">Edit Employee</h2>
+          <h2 className="text-2xl font-bold mb-6">{t('Edit Employee')}</h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Name
+                  {t('Name')}
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={employee.name}
                   onChange={handleChange}
-                  placeholder="Insert Name"
+                  placeholder={t('Insert Name')}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                   required
                 />
@@ -112,33 +114,32 @@ const Edit = () => {
               {/* Marital Status */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Marital Status
+                  {t('Marital Status')}
                 </label>
                 <select
                   name="maritalStatus"
                   onChange={handleChange}
                   value={employee.maritalStatus}
-                  placeholder="Marital Status"
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                   required
                 >
-                  <option value="">Select Status</option>
-                  <option value="single">Single</option>
-                  <option value="married">Married</option>
+                  <option value="">{t('Select Status')}</option>
+                  <option value="single">{t('Single')}</option>
+                  <option value="married">{t('Married')}</option>
                 </select>
               </div>
 
               {/* Designation */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Designation
+                  {t('Designation')}
                 </label>
                 <input
                   type="text"
                   name="designation"
-                  onChange={handleChange}
                   value={employee.designation}
-                  placeholder="Designation"
+                  onChange={handleChange}
+                  placeholder={t('Designation')}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                   required
                 />
@@ -147,14 +148,14 @@ const Edit = () => {
               {/* Salary */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Salary
+                  {t('Salary')}
                 </label>
                 <input
                   type="number"
                   name="salary"
-                  onChange={handleChange}
                   value={employee.salary}
-                  placeholder="Salary"
+                  onChange={handleChange}
+                  placeholder={t('Salary')}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                   required
                 />
@@ -163,7 +164,7 @@ const Edit = () => {
               {/* Department */}
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Department
+                  {t('Department')}
                 </label>
                 <select
                   name="department"
@@ -172,7 +173,7 @@ const Edit = () => {
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                   required
                 >
-                  <option value="">Select Department</option>
+                  <option value="">{t('Select Department')}</option>
                   {departments.map((dep) => (
                     <option key={dep._id} value={dep._id}>
                       {dep.dep_name}
@@ -186,7 +187,7 @@ const Edit = () => {
               type="submit"
               className="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
             >
-              Edit Employee
+              {t('Edit Employee')}
             </button>
           </form>
         </div>

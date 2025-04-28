@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const View = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
   const [employee, setEmployee] = useState(null);
 
   useEffect(() => {
@@ -28,13 +30,14 @@ const View = () => {
     };
 
     fetchEmployee();
-  }, []);
+  }, [id]);
+
   return (
     <>
       {employee ? (
         <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-md shadow-md">
           <h2 className="text-2xl font-bold mb-8 text-center">
-            Employee Details
+            {t("employeeDetails")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -45,38 +48,38 @@ const View = () => {
             </div>
             <div>
               <div className="flex space-x-3 mb-5">
-                <p className="text-lg font-bold">Name:</p>
+                <p className="text-lg font-bold">{t("name")}:</p>
                 <p className="font-medium">{employee.userId.name}</p>
               </div>
               <div className="flex space-x-3 mb-5">
-                <p className="text-lg font-bold">Employee ID:</p>
+                <p className="text-lg font-bold">{t("employeeId")}:</p>
                 <p className="font-medium">{employee.employeeId}</p>
               </div>
 
               <div className="flex space-x-3 mb-5">
-                <p className="text-lg font-bold">Date of Birth:</p>
+                <p className="text-lg font-bold">{t("dob")}:</p>
                 <p className="font-medium">
                   {new Date(employee.dob).toLocaleDateString()}
                 </p>
               </div>
               <div className="flex space-x-3 mb-5">
-                <p className="text-lg font-bold">Gender:</p>
+                <p className="text-lg font-bold">{t("gender")}:</p>
                 <p className="font-medium">{employee.gender}</p>
               </div>
 
               <div className="flex space-x-3 mb-5">
-                <p className="text-lg font-bold">Department:</p>
+                <p className="text-lg font-bold">{t("department")}:</p>
                 <p className="font-medium">{employee.department.dep_name}</p>
               </div>
               <div className="flex space-x-3 mb-5">
-                <p className="text-lg font-bold">Marital Status:</p>
+                <p className="text-lg font-bold">{t("maritalStatus")}:</p>
                 <p className="font-medium">{employee.maritalStatus}</p>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div> Loading ....</div>
+        <div>{t("loading")}</div>
       )}
     </>
   );

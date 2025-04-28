@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 import { columns, EmployeeButtons } from '../../utils/EmployeeHelper'
 import DataTable from 'react-data-table-component'
 import axios from 'axios'
+import { useTranslation } from 'react-i18next'
 
 const List = () => {
+    const { t } = useTranslation();
     const [employees, setEmployees] = useState([])
     const [empLoading, setEmpLoading] = useState(false)
     const [filteredEmployee, setFilteredEmployees] = useState(null)
@@ -59,30 +61,30 @@ const List = () => {
         return <div>Loading ...</div>
       }
 
-  return (
-    <div className='p-6'>
-        <div className="text-center">
-        <h3 className="text-2xl font-bold">Manage Employee</h3>
-      </div>
-      <div className="flex justify-between items-center">
-        <input
-          type="text"
-          placeholder="Seach By Dep Name"
-          className="px-4 py-0.5 border"
-          onChange={handleFilter}
-        />
-        <Link
-          to="/admin-dashboard/add-employee"
-          className="px-4 py-1 bg-teal-600 rounded text-white"
-        >
-          Add New Employee
-        </Link>
-      </div>
-      <div className='mt-6'>
-        <DataTable columns={columns} data={filteredEmployee} pagination/>
-      </div>
-    </div>
-  )
-}
+      return (
+        <div className='p-6'>
+          <div className="text-center">
+            <h3 className="text-2xl font-bold">{t('Manage Employee')}</h3>
+          </div>
+          <div className="flex justify-between items-center">
+            <input
+              type="text"
+              placeholder={t('Search By Dep Name')}
+              className="px-4 py-0.5 border"
+              onChange={handleFilter}
+            />
+            <Link
+              to="/admin-dashboard/add-employee"
+              className="px-4 py-1 bg-teal-600 rounded text-white"
+            >
+              {t('Add New Employee')}
+            </Link>
+          </div>
+          <div className='mt-6'>
+            <DataTable columns={columns} data={filteredEmployee} pagination />
+          </div>
+        </div>
+      );
+    };
 
 export default List

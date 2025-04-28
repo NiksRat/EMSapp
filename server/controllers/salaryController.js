@@ -30,7 +30,7 @@ const addSalary = async (req, res) => {
 
         await newSalary.save()
 
-        const populatedSalary = await Salary.findById(salary._id).populate({
+        const populatedSalary = await Salary.findById(newSalary._id).populate({
           path: 'employeeId',
           select: 'name department',  
         });

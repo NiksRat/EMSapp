@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import ExportDepartmentTable from "../exportData/ExportDepartmentTable";
 import {
   BarChart,
@@ -15,7 +16,6 @@ import {
 } from "recharts";
 import html2canvas from "html2canvas";
 import pdfMake from "pdfmake/build/pdfmake";
-import { Document, Packer, Paragraph, TextRun } from "docx";
 
 pdfMake.vfs = window.pdfMake.vfs;
 
@@ -25,8 +25,9 @@ const COLORS = [
 ];
 
 const LeaderComparison = () => {
+  const { t } = useTranslation();
   const [comparisonData, setComparisonData] = useState([]);
-  const [exporting, setExporting] = useState(false); // Состояние для блокировки кнопки
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     const fetchComparison = async () => {
@@ -40,31 +41,30 @@ const LeaderComparison = () => {
         const sorted = res.data.data.sort((a, b) => b.employees - a.employees);
         setComparisonData(sorted);
       } catch (err) {
-        console.error("Ошибка при загрузке сравнения:", err.message);
+        console.error(t('error_loading_comparison'), err.message);
       }
     };
 
     fetchComparison();
-  }, []);
+  }, [t]);
 
-  if (comparisonData.length === 0) return <div className="p-4">Загрузка данных...</div>;
+  if (comparisonData.length === 0) return <div className="p-4">{t('loading_data')}</div>;
 
-  // Функция для экспорта диаграмм
   const exportChartToImage = (chartId) => {
-    setExporting(true); // Блокируем кнопку до завершения экспорта
+    setExporting(true);
 
     const chartElement = document.getElementById(chartId);
     const button = chartElement.querySelector("button");
-    if (button) button.style.display = "none"; // Скрываем кнопку
+    if (button) button.style.display = "none";
 
     html2canvas(chartElement).then((canvas) => {
       const image = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = image;
-      link.download = `${chartId}_chart.png`; // Название файла
+      link.download = `${chartId}_chart.png`;
       link.click();
-      setExporting(false); // Разблокируем кнопку
-      if (button) button.style.display = "block"; // Показываем кнопку обратно
+      setExporting(false);
+      if (button) button.style.display = "block";
     });
   };
 
@@ -81,13 +81,18 @@ const LeaderComparison = () => {
   
       const docDefinition = {
         content: [
-          { text: "Сравнение департаментов", style: "header", alignment: "center" },
-          { text: 'ОАО "МТЗ"', alignment: "center", margin: [0, 0, 0, 10] },
+          { text: t('department_comparison'), style: "header", alignment: "center" },
+          { text: t('organization_name'), alignment: "center", margin: [0, 0, 0, 10] },
           {
             table: {
               widths: ['*', 'auto', 'auto', '*'],
               body: [
-                ['Департамент', 'Сотрудники', 'Отпуска', 'Общая выплаченная зарплата ($)'],
+                [
+                  t('department'),
+                  t('employees'),
+                  t('leaves'),
+                  t('total_salary_paid')
+                ],
                 ...comparisonData.map(item => [
                   item.department,
                   item.employees,
@@ -98,9 +103,9 @@ const LeaderComparison = () => {
             },
             layout: 'lightHorizontalLines'
           },
-          { text: "Количество сотрудников по департаментам", style: "subHeader" },
+          { text: t('employees_by_department'), style: "subHeader" },
           { image: barImage, width: 500, height: 300 },
-          { text: "Доля зарплаты по департаментам", style: "subHeader" },
+          { text: t('salary_share_by_department'), style: "subHeader" },
           { image: pieImage, width: 500, height: 300 },
         ],
         styles: {
@@ -131,36 +136,36 @@ const LeaderComparison = () => {
         <html xmlns:o='urn:schemas-microsoft-com:office:office'
               xmlns:w='urn:schemas-microsoft-com:office:word'
               xmlns='http://www.w3.org/TR/REC-html40'>
-        <head><meta charset='utf-8'><title>Сравнение департаментов</title></head>
+        <head><meta charset='utf-8'><title>${t('department_comparison')}</title></head>
         <body style="font-family: Arial; font-size: 12pt;">
-          <h3 style="text-align: center;">Сравнение департаментов</h3>
-          <h4 style="text-align: center;">ОАО "МТЗ"</h4>
+          <h3 style="text-align: center;">${t('department_comparison')}</h3>
+          <h4 style="text-align: center;">${t('organization_name')}</h4>
   
           <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
             <tr>
-              <th>Департамент</th>
-              <th>Сотрудники</th>
-              <th>Отпуска</th>
-              <th>Общая выплаченная зарплата</th>
+              <th>${t('department')}</th>
+              <th>${t('employees')}</th>
+              <th>${t('leaves')}</th>
+              <th>${t('total_salary_paid')}</th>
             </tr>
             ${comparisonData.map(item => `
               <tr>
                 <td>${item.department}</td>
                 <td>${item.employees}</td>
                 <td>${item.leaves}</td>
-                <td>${item.totalSalary.toFixed(2)} руб.</td>
+                <td>${item.totalSalary.toFixed(2)} ${t('currency')}</td>
               </tr>
             `).join('')}
           </table>
   
           <br/>
   
-          <h4 style="text-align: center;">Количество сотрудников по департаментам</h4>
+          <h4 style="text-align: center;">${t('employees_by_department')}</h4>
           <img src="${barImage}" style="display: block; margin: 0 auto;" />
   
           <br/>
   
-          <h4 style="text-align: center;">Доля зарплаты по департаментам</h4>
+          <h4 style="text-align: center;">${t('salary_share_by_department')}</h4>
           <img src="${pieImage}" style="display: block; margin: 0 auto;" />
         </body>
         </html>
@@ -179,21 +184,21 @@ const LeaderComparison = () => {
 
   return (
     <div className="p-6">
-      <h3 className="text-2xl font-bold mb-4">Сравнение департаментов</h3>
+      <h3 className="text-2xl font-bold mb-4">{t('department_comparison')}</h3>
 
-      <div className="flex justify-end mb-4">
-        <ExportDepartmentTable data={comparisonData} />
+      <div className="flex justify-end items-center gap-4 mb-4">
+        <ExportDepartmentTable data={comparisonData} className="mt-4"/>
         <button
           onClick={exportToPDF}
           className="px-4 py-2 border bg-gray-100 text-lg font-semibold"
         >
-          Экспортировать в PDF
+          {t('export_to_pdf')}
         </button>
         <button
           onClick={exportToWord}
-          className="ml-4 px-4 py-2 border bg-gray-100 text-lg font-semibold"
+          className="px-4 py-2 border bg-gray-100 text-lg font-semibold"
         >
-          Экспортировать в Word
+          {t('export_to_word')}
         </button>
       </div>
 
@@ -201,10 +206,10 @@ const LeaderComparison = () => {
         <table className="min-w-[600px] w-full bg-white border border-gray-300 text-sm rounded shadow">
           <thead>
             <tr className="bg-gray-100 text-left text-gray-800">
-              <th className="p-3 border-b w-[250px]">Департамент</th>
-              <th className="p-3 border-b text-center">Сотрудники</th>
-              <th className="p-3 border-b text-center">Отпуска</th>
-              <th className="p-3 border-b text-center">Общая выплаченная зарплата ($)</th>
+              <th className="p-3 border-b w-[250px]">{t('department')}</th>
+              <th className="p-3 border-b text-center">{t('employees')}</th>
+              <th className="p-3 border-b text-center">{t('leaves')}</th>
+              <th className="p-3 border-b text-center">{t('total_salary_paid')}</th>
             </tr>
           </thead>
           <tbody>
@@ -224,7 +229,7 @@ const LeaderComparison = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="bg-white rounded shadow p-4" id="bar-chart-container">
-          <h4 className="text-lg font-semibold mb-2">Количество сотрудников по департаментам</h4>
+          <h4 className="text-lg font-semibold mb-2">{t('employees_by_department')}</h4>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={comparisonData}>
               <XAxis dataKey="department" />
@@ -236,7 +241,7 @@ const LeaderComparison = () => {
         </div>
 
         <div className="bg-white rounded shadow p-4" id="pie-chart-container">
-          <h4 className="text-lg font-semibold mb-2">Доля зарплаты по департаментам</h4>
+          <h4 className="text-lg font-semibold mb-2">{t('salary_share_by_department')}</h4>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie

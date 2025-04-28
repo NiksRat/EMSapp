@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ExportCSV from "../exportData/export";
+import { useTranslation } from 'react-i18next';
 
 const SalaryReport = () => {
+  const { t } = useTranslation();
   const [report, setReport] = useState({});
   const [limit, setLimit] = useState(5);
   const [skip, setSkip] = useState(0);
@@ -51,12 +53,12 @@ const SalaryReport = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-50">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">💼 Salary Report</h2>
+        <h2 className="text-3xl font-bold text-gray-800">{t('salaryReport')}</h2>
         <ExportCSV reportData={report} fileName="Salary_Report" />
       </div>
 
       <div className="mb-6">
-        <label className="block mb-2 text-lg font-medium text-gray-700">📅 Filter by Pay Date:</label>
+        <label className="block mb-2 text-lg font-medium text-gray-700">{t('filterByDate')}</label>
         <input
           type="date"
           className="border p-2 rounded bg-white shadow"
@@ -68,7 +70,7 @@ const SalaryReport = () => {
       </div>
 
       {loading ? (
-        <div className="text-center text-lg text-gray-600">Loading...</div>
+        <div className="text-center text-lg text-gray-600">{t('loading')}</div>
       ) : (
         Object.entries(report).map(([date, record]) => (
           <div key={date} className="bg-white shadow-md rounded-lg mb-8 p-6 border">
@@ -77,14 +79,14 @@ const SalaryReport = () => {
               <table className="min-w-full text-left text-sm border-collapse">
                 <thead className="bg-teal-600 text-white">
                   <tr>
-                    <th className="p-2 border">S No</th>
-                    <th className="p-2 border">Card ID</th>
-                    <th className="p-2 border">Name</th>
-                    <th className="p-2 border">Department</th>
-                    <th className="p-2 border">Basic Salary</th>
-                    <th className="p-2 border">Allowances</th>
-                    <th className="p-2 border">Deductions</th>
-                    <th className="p-2 border">Net Salary</th>
+                    <th className="p-2 border">{t('serialNo')}</th>
+                    <th className="p-2 border">{t('cardID')}</th>
+                    <th className="p-2 border">{t('name')}</th>
+                    <th className="p-2 border">{t('department')}</th>
+                    <th className="p-2 border">{t('basicSalary')}</th>
+                    <th className="p-2 border">{t('allowances')}</th>
+                    <th className="p-2 border">{t('deductions')}</th>
+                    <th className="p-2 border">{t('netSalary')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -112,7 +114,7 @@ const SalaryReport = () => {
           className="px-6 py-2 bg-teal-600 text-white font-medium rounded hover:bg-teal-700 shadow"
           onClick={handleLoadmore}
         >
-          ⬇️ Load More
+          ⬇️ {t('loadMore')}
         </button>
       </div>
     </div>

@@ -12,6 +12,7 @@ import {
   TableCell,
 } from "docx";
 import { saveAs } from "file-saver";
+import { useTranslation } from 'react-i18next';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = window.pdfMake.vfs
@@ -25,6 +26,7 @@ const View = () => {
   const [startDate, setStartDate] = useState(null); 
   const [endDate, setEndDate] = useState(null); 
   const { user } = useAuth();
+  const { t } = useTranslation(); 
 
 
   const fetchSalareis = async () => {
@@ -92,8 +94,6 @@ const View = () => {
     if (!salary) return;
 
     const employee = salary.employeeId;
-
-    
     const payDate = new Date(salary.payDate).toLocaleDateString("ru-RU");
 
     if (format === "word") {
@@ -102,33 +102,33 @@ const View = () => {
           {
             children: [
               new Paragraph({
-                text: "Расчетный лист",
+                text: t("Salary Slip"), // Translate this text
                 heading: "Heading1",
                 alignment: "CENTER",
               }),
               new Paragraph({
-                children: [new TextRun(`Сотрудник: ${employee.userId?.name || "N/A"}`)],
+                children: [new TextRun(`${t("Employee")}: ${employee.userId?.name || "N/A"}`)], // Translate the text
               }),
               new Paragraph({
-                children: [new TextRun(`Подразделение: ${employee.department?.dep_name || "N/A"}`)],
+                children: [new TextRun(`${t("Department")}: ${employee.department?.dep_name || "N/A"}`)], // Translate the text
               }),
               new Paragraph({
-                children: [new TextRun(`Дата расчета: ${payDate}`)],
+                children: [new TextRun(`${t("Pay Date")}: ${payDate}`)], // Translate the text
               }),
               new Paragraph({ text: "" }),
     
               new Paragraph({
-                children: [new TextRun({ text: "Оклад: ", bold: true }), new TextRun(`${salary.basicSalary} руб`)],
+                children: [new TextRun({ text: t("Basic Salary") + ": ", bold: true }), new TextRun(`${salary.basicSalary} руб`)], // Translate the text
               }),
               new Paragraph({
-                children: [new TextRun({ text: "Премии: ", bold: true }), new TextRun(`${salary.allowances} руб`)],
+                children: [new TextRun({ text: t("Allowances") + ": ", bold: true }), new TextRun(`${salary.allowances} руб`)], // Translate the text
               }),
               new Paragraph({
-                children: [new TextRun({ text: "Удержания (НДФЛ): ", bold: true }), new TextRun(`${salary.deductions} руб`)],
+                children: [new TextRun({ text: t("Deductions") + " (НДФЛ): ", bold: true }), new TextRun(`${salary.deductions} руб`)], // Translate the text
               }),
               new Paragraph({
                 children: [
-                  new TextRun({ text: "К выплате: ", bold: true }),
+                  new TextRun({ text: t("To Pay") + ": ", bold: true }), // Translate the text
                   new TextRun({ text: `${salary.netSalary} руб`, bold: true }),
                 ],
               }),
@@ -148,19 +148,19 @@ const View = () => {
     else if (format === "pdf") {
       const docDefinition = {
         content: [
-          { text: "Расчетный лист", style: "header", alignment: "center" },
-          { text: 'ОАО "МТЗ"', alignment: "center", margin: [0, 0, 0, 10] },
+          { text: t("Salary Slip"), style: "header", alignment: "center" }, // Translate the text
+          { text: t('companyName'), alignment: "center", margin: [0, 0, 0, 10] },
     
           {
             columns: [
               { text: `${employee2?.userId?.name || "N/A"}, таб. №${employee.employeeId}`, style: "info" },
-              { text: `Расчетная дата: ${payDate}`, alignment: "right", style: "info" }
+              { text: `${t("Pay Date")}: ${payDate}`, alignment: "right", style: "info" } // Translate the text
             ]
           },
           {
             columns: [
-              { text: `Подразделение: ${employee2?.department?.dep_name || "N/A"}`, style: "info" },
-              { text: `Оклад/Тариф: ${salary.basicSalary} руб.`, alignment: "right", style: "info" }
+              { text: `${t("Department")}: ${employee2?.department?.dep_name || "N/A"}`, style: "info" }, // Translate the text
+              { text: `${t("Basic Salary")}: ${salary.basicSalary} руб.`, alignment: "right", style: "info" } // Translate the text
             ]
           },
     
@@ -170,19 +170,19 @@ const View = () => {
               widths: ['*', 'auto', 'auto', '*', 'auto'],
               body: [
                 [
-                  { text: 'Вид начисления', bold: true, fillColor: '#f0f0f0' },
-                  { text: 'Сумма', bold: true, fillColor: '#f0f0f0' },
-                  { text: 'Дней / Часов', bold: true, fillColor: '#f0f0f0' },
-                  { text: 'Вид удержания', bold: true, fillColor: '#f0f0f0' },
-                  { text: 'Сумма', bold: true, fillColor: '#f0f0f0' },
+                  { text: t('Type of Income'), bold: true, fillColor: '#f0f0f0' }, // Translate the text
+                  { text: t('Amount'), bold: true, fillColor: '#f0f0f0' }, // Translate the text
+                  { text: t('Days / Hours'), bold: true, fillColor: '#f0f0f0' }, // Translate the text
+                  { text: t('Type of Deduction'), bold: true, fillColor: '#f0f0f0' }, // Translate the text
+                  { text: t('Amount'), bold: true, fillColor: '#f0f0f0' }, // Translate the text
                 ],
                 ['оклад по дням', `${salary.basicSalary}`, '15 дн.', 'НДФЛ', `${salary.deductions}`],
                 ['за работу в выходные дни', `${salary.allowances}`, '1 день', '', ''],
                 ['отпускные', '0.00', '5 дн.', '', ''],
                 [
-                  { text: 'Начислено', bold: true },
-                  { text: `${salary.basicSalary + salary.allowances}`, colSpan: 2, bold: true }, {},
-                  { text: 'Удержано', bold: true },
+                  { text: t('Total Income'), bold: true }, // Translate the text
+                  { text: `${salary.basicSalary + salary.allowances}`, colSpan: 2, bold: true }, {}, 
+                  { text: t('Total Deductions'), bold: true }, // Translate the text
                   { text: `${salary.deductions}`, bold: true }
                 ],
               ],
@@ -194,11 +194,11 @@ const View = () => {
           {
             columns: [
               {
-                text: `Полагается к выплате: ${salary.netSalary} руб.`,
+                text: `${t("Amount to Pay")}: ${salary.netSalary} руб.`, // Translate the text
                 bold: true
               },
               {
-                text: `Выплачено через кассу (банк): ${salary.netSalary} руб.`,
+                text: `${t("Paid via cash (bank)")}: ${salary.netSalary} руб.`, // Translate the text
                 alignment: "right"
               }
             ]
@@ -219,8 +219,6 @@ const View = () => {
         console.error("Ошибка при генерации PDF:", error);
       }
     }
-    
-    
   };
 
   const exportSalaryToWord = (salary) => {
@@ -230,79 +228,79 @@ const View = () => {
     const payDate = new Date(salary.payDate).toLocaleDateString("ru-RU");
   
     const htmlContent = `
-      <html xmlns:o='urn:schemas-microsoft-com:office:office'
-            xmlns:w='urn:schemas-microsoft-com:office:word'
-            xmlns='http://www.w3.org/TR/REC-html40'>
-      <head><meta charset='utf-8'><title>Расчетный лист</title></head>
-      <body style="font-family: Arial; font-size: 12pt;">
-        <h3 style="text-align: center;">Расчетный лист</h3>
-        <h4 style="text-align: center;">ОАО "МТЗ"</h4>
-  
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-          <tr>
-            <td><b>${employee2?.userId?.name || "N/A"}, таб. №${employee.employeeId}</b></td>
-            <td style="text-align: right;"><b>Расчетная дата:</b> ${payDate}</td>
-          </tr>
-          <tr>
-            <td><b>Подразделение:</b> ${employee2?.department?.dep_name || "N/A"}</td>
-            <td style="text-align: right;"><b>Оклад/Тариф:</b> ${salary.basicSalary} руб.</td>
-          </tr>
-        </table>
-  
-        <br/>
-  
-        <table border="1" style="width: 100%; border-collapse: collapse; text-align: center;">
-          <tr>
-            <th colspan="3">Начисления</th>
-            <th colspan="2">Удержания</th>
-          </tr>
-          <tr>
-            <th>Вид начисления</th>
-            <th>Сумма</th>
-            <th>Дней / Часов</th>
-            <th>Вид удержания</th>
-            <th>Сумма</th>
-          </tr>
-          <tr>
-            <td>Оклад</td>
-            <td>${salary.basicSalary}</td>
-            <td>—</td>
-            <td>НДФЛ</td>
-            <td>${salary.deductions}</td>
-          </tr>
-          <tr>
-            <td>Премии</td>
-            <td>${salary.allowances}</td>
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align: right;"><b>Начислено</b></td>
-            <td colspan="2"><b>${salary.basicSalary + salary.allowances}</b></td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align: right;"><b>Удержано</b></td>
-            <td colspan="2"><b>${salary.deductions}</b></td>
-          </tr>
-        </table>
-  
-        <br/>
-  
-        <table style="width: 100%; margin-top: 10px;">
-          <tr>
-            <td><b>Полагается к выплате:</b> ${salary.netSalary.toFixed(2)} руб.</td>
-          </tr>
-          <tr>
-            <td>Выплачено через кассу (банк): ${salary.netSalary.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td>Долг за предприятием (долг за работником): —</td>
-          </tr>
-        </table>
-      </body>
-      </html>
-    `;
+    <html xmlns:o='urn:schemas-microsoft-com:office:office'
+          xmlns:w='urn:schemas-microsoft-com:office:word'
+          xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><meta charset='utf-8'><title>${t('salarySlipTitle')}</title></head>
+    <body style="font-family: Arial; font-size: 12pt;">
+      <h3 style="text-align: center;">${t('salarySlip')}</h3>
+      <h4 style="text-align: center;">${t('companyName')}</h4>
+
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr>
+          <td><b>${employee2?.userId?.name || "N/A"}, ${t('tabNumber')}: ${employee.employeeId}</b></td>
+          <td style="text-align: right;"><b>${t('payDate')}:</b> ${payDate}</td>
+        </tr>
+        <tr>
+          <td><b>${t('department')}:</b> ${employee2?.department?.dep_name || "N/A"}</td>
+          <td style="text-align: right;"><b>${t('salaryRate')}:</b> ${salary.basicSalary} руб.</td>
+        </tr>
+      </table>
+
+      <br/>
+
+      <table border="1" style="width: 100%; border-collapse: collapse; text-align: center;">
+        <tr>
+          <th colspan="3">${t('accruals')}</th>
+          <th colspan="2">${t('deductions')}</th>
+        </tr>
+        <tr>
+          <th>${t('accrualType')}</th>
+          <th>${t('amount')}</th>
+          <th>${t('daysHours')}</th>
+          <th>${t('deductionType')}</th>
+          <th>${t('amount')}</th>
+        </tr>
+        <tr>
+          <td>${t('salary')}</td>
+          <td>${salary.basicSalary}</td>
+          <td>—</td>
+          <td>${t('incomeTax')}</td>
+          <td>${salary.deductions}</td>
+        </tr>
+        <tr>
+          <td>${t('bonus')}</td>
+          <td>${salary.allowances}</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td colspan="3" style="text-align: right;"><b>${t('accrued')}</b></td>
+          <td colspan="2"><b>${salary.basicSalary + salary.allowances}</b></td>
+        </tr>
+        <tr>
+          <td colspan="3" style="text-align: right;"><b>${t('deducted')}</b></td>
+          <td colspan="2"><b>${salary.deductions}</b></td>
+        </tr>
+      </table>
+
+      <br/>
+
+      <table style="width: 100%; margin-top: 10px;">
+        <tr>
+          <td><b>${t('toBePaid')}:</b> ${salary.netSalary.toFixed(2)} руб.</td>
+        </tr>
+        <tr>
+          <td>${t('paidThroughCash')} (${salary.netSalary.toFixed(2)})</td>
+        </tr>
+        <tr>
+          <td>${t('companyDebt')} (${t('employeeDebt')}: —)</td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
   
     const blob = new Blob(['\ufeff', htmlContent], {
       type: 'application/msword',
@@ -327,22 +325,22 @@ const View = () => {
   return (
     <>
       {filteredSalaries === null ? (
-        <div>Loading ...</div>
+        <div>{t('loading')}</div>  
       ) : (
         <div className="overflow-x-auto p-5">
           <div className="text-center">
-            <h2 className="text-2xl font-bold">Salary History</h2>
+            <h2 className="text-2xl font-bold">{t('salaryHistory')}</h2>  
           </div>
           <div className="flex justify-end my-3 gap-3">
             <input
               type="date"
-              placeholder="Start Date"
+              placeholder={t('startDate')}  
               className="border px-2 rounded-md py-0.5 border-gray-300"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <input
               type="date"
-              placeholder="End Date"
+              placeholder={t('endDate')}  
               className="border px-2 rounded-md py-0.5 border-gray-300"
               onChange={(e) => setEndDate(e.target.value)}
             />
@@ -350,22 +348,22 @@ const View = () => {
               className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
               onClick={filterSalaries}
             >
-              Filter
+              {t('filter')}  
             </button>
           </div>
-
+  
           {filteredSalaries.length > 0 ? (
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 border border-gray-200">
                 <tr>
-                  <th className="px-6 py-3">SNO</th>
-                  <th className="px-6 py-3">Emp ID</th>
-                  <th className="px-6 py-3">Salary</th>
-                  <th className="px-6 py-3">Allowance</th>
-                  <th className="px-6 py-3">Deduction</th>
-                  <th className="px-6 py-3">Total</th>
-                  <th className="px-6 py-3">Pay Date</th>
-                  <th className="px-6 py-3">Export</th>
+                  <th className="px-6 py-3">{t('sno')}</th>  
+                  <th className="px-6 py-3">{t('empId')}</th>  
+                  <th className="px-6 py-3">{t('salary')}</th>  
+                  <th className="px-6 py-3">{t('allowance')}</th>  
+                  <th className="px-6 py-3">{t('deduction')}</th>  
+                  <th className="px-6 py-3">{t('total')}</th>  
+                  <th className="px-6 py-3">{t('payDate')}</th>  
+                  <th className="px-6 py-3">{t('export')}</th>  
                 </tr>
               </thead>
               <tbody>
@@ -385,22 +383,22 @@ const View = () => {
                     </td>
                     <td className="px-6 py-3 flex gap-2">
                       <button
-                       className={`px-4 py-1 rounded text-white ${
-                        salary.netSalary > 0 ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
-                      }`}
+                        className={`px-4 py-1 rounded text-white ${
+                          salary.netSalary > 0 ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+                        }`}
                         disabled={salary.netSalary <= 0}
                         onClick={() => exportSalaryToWord(salary)}
                       >
-                        Экспорт в Word
+                        {t('exportToWord')}  
                       </button>
                       <button
-                       className={`px-4 py-1 rounded text-white ${
-                        salary.netSalary > 0 ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 cursor-not-allowed"
-                      }`}
+                        className={`px-4 py-1 rounded text-white ${
+                          salary.netSalary > 0 ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 cursor-not-allowed"
+                        }`}
                         disabled={salary.netSalary <= 0}
                         onClick={() => exportLastSalary("pdf", salary)}
                       >
-                        Экспорт в PDF
+                        {t('exportToPDF')}  
                       </button>
                     </td>
                   </tr>
@@ -408,12 +406,12 @@ const View = () => {
               </tbody>
             </table>
           ) : (
-            <div>No Records</div>
+            <div>{t('noRecords')}</div>  // "Нет записей"
           )}
         </div>
       )}
     </>
-  );
+  );  
 };
 
 export default View;

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/authContext";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const List = () => {
   const [leaves, setLeaves] = useState(null);
   let sno = 1;
   const { id } = useParams();
   const { user } = useAuth();
+  const { t } = useTranslation(); // Initialize the translation hook
 
   const fetchLeaves = async () => {
     try {
@@ -34,18 +36,18 @@ const List = () => {
   }, []);
 
   if (!leaves) {
-    return <div> Loadding </div>;
+    return <div>{t("loading")}</div>;
   }
 
   return (
     <div className="p-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold">Manage Leaves</h3>
+        <h3 className="text-2xl font-bold">{t("manageLeaves")}</h3>
       </div>
       <div className="flex justify-between items-center">
         <input
           type="text"
-          placeholder="Seach By Dep Name"
+          placeholder={t("searchByDepName")}
           className="px-4 py-0.5 border"
         />
         {user.role === "employee" && (
@@ -53,7 +55,7 @@ const List = () => {
             to="/employee-dashboard/add-leave"
             className="px-4 py-1 bg-teal-600 rounded text-white"
           >
-            Add New Leave
+            {t("addNewLeave")}
           </Link>
         )}
       </div>
@@ -61,12 +63,12 @@ const List = () => {
       <table className="w-full text-sm text-left text-gray-500 mt-6">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 border border-gray-200">
           <tr>
-            <th className="px-6 py-3">SNO</th>
-            <th className="px-6 py-3">Leave Type</th>
-            <th className="px-6 py-3">From</th>
-            <th className="px-6 py-3">To</th>
-            <th className="px-6 py-3">Description</th>
-            <th className="px-6 py-3">Status</th>
+            <th className="px-6 py-3">{t("sno")}</th>
+            <th className="px-6 py-3">{t("leaveType")}</th>
+            <th className="px-6 py-3">{t("from")}</th>
+            <th className="px-6 py-3">{t("to")}</th>
+            <th className="px-6 py-3">{t("description")}</th>
+            <th className="px-6 py-3">{t("status")}</th>
           </tr>
         </thead>
         <tbody>

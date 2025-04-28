@@ -20,10 +20,12 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
+import { useTranslation } from "react-i18next"; // добавили
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const LeaderSummary = () => {
+  const { t } = useTranslation(); // добавили
   const [summary, setSummary] = useState(null);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const LeaderSummary = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        setSummary(res.data.data); // 💡 Используем res.data.data, как в контроллере
+        setSummary(res.data.data);
       } catch (err) {
         console.error(err);
       }
@@ -42,13 +44,13 @@ const LeaderSummary = () => {
     fetchSummary();
   }, []);
 
-  if (!summary) return <div>Loading...</div>;
+  if (!summary) return <div>{t('loading')}</div>;
 
   const leaveData = {
-    labels: ["Approved", "Pending", "Rejected"],
+    labels: [t('approved'), t('pending'), t('rejected')],
     datasets: [
       {
-        label: "Leave Status",
+        label: t('leaveStatus'),
         data: [
           summary.leaveSummary.approved,
           summary.leaveSummary.pending,
@@ -63,7 +65,7 @@ const LeaderSummary = () => {
     labels: summary.averageSalaryByDepartment.map(dep => dep.department),
     datasets: [
       {
-        label: "Avg salary",
+        label: t('avgSalary'),
         data: summary.averageSalaryByDepartment.map(dep => dep.averageSalary),
         backgroundColor: "#6366F1",
       },
@@ -72,53 +74,53 @@ const LeaderSummary = () => {
 
   return (
     <div className="p-6">
-      <h3 className="text-2xl font-bold">Leader Dashboard</h3>
+      <h3 className="text-2xl font-bold">{t('leaderDashboard')}</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
         <SummaryCard
           icon={<FaUsers />}
-          text="Total Employees"
+          text={t('totalEmployees')}
           number={summary.totalEmployees}
           color="bg-blue-600"
         />
         <SummaryCard
           icon={<FaBuilding />}
-          text="Total Departments"
+          text={t('totalDepartments')}
           number={summary.totalDepartments}
           color="bg-indigo-600"
         />
         <SummaryCard
           icon={<FaMoneyBillWave />}
-          text="Total Salary"
+          text={t('totalSalary')}
           number={`$${summary.totalSalary}`}
           color="bg-purple-600"
         />
       </div>
 
       <div className="mt-12">
-        <h4 className="text-center text-2xl font-bold">Leave Details</h4>
+        <h4 className="text-center text-2xl font-bold">{t('leaveDetails')}</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <SummaryCard
             icon={<FaFileAlt />}
-            text="Leave Applied"
+            text={t('leaveApplied')}
             number={summary.leaveSummary.appliedFor}
             color="bg-teal-600"
           />
           <SummaryCard
             icon={<FaCheckCircle />}
-            text="Leave Approved"
+            text={t('leaveApproved')}
             number={summary.leaveSummary.approved}
             color="bg-green-600"
           />
           <SummaryCard
             icon={<FaHourglassHalf />}
-            text="Leave Pending"
+            text={t('leavePending')}
             number={summary.leaveSummary.pending}
             color="bg-yellow-600"
           />
           <SummaryCard
             icon={<FaTimesCircle />}
-            text="Leave Rejected"
+            text={t('leaveRejected')}
             number={summary.leaveSummary.rejected}
             color="bg-red-600"
           />
@@ -126,14 +128,14 @@ const LeaderSummary = () => {
       </div>
 
       <div className="mt-12">
-        <h4 className="text-center text-2xl font-bold">Analytics</h4>
+        <h4 className="text-center text-2xl font-bold">{t('analytics')}</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <div className="bg-white p-4 rounded-lg shadow">
-            <h5 className="text-lg font-bold mb-2">Average Salary by Department</h5>
+            <h5 className="text-lg font-bold mb-2">{t('avgSalaryByDepartment')}</h5>
             <Bar data={avgSalaryData} />
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <h5 className="text-lg font-bold mb-2">Leave Status</h5>
+            <h5 className="text-lg font-bold mb-2">{t('leaveStatus')}</h5>
             <Pie data={leaveData} />
           </div>
         </div>

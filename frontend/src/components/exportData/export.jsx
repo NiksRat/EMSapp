@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+import { useTranslation } from "react-i18next";
 
 const ExportCSV = ({ reportData, fileName }) => {
+  const { t } = useTranslation(); // Хук для перевода
   const [limit, setLimit] = useState(5);
   const [isVisible, setIsVisible] = useState(false);
   const dropdownRef = useRef(null);
@@ -63,7 +65,7 @@ const ExportCSV = ({ reportData, fileName }) => {
           onClick={() => setIsVisible(!isVisible)}
           style={{ padding: "8px 12px", background: "#6c757d", color: "#fff", border: "none", borderRadius: 4 }}
         >
-          Export Limit: {limit === "Все" ? "All" : limit}
+          {t('Export Limit')}: {limit === "Все" ? t('All') : limit} {/* Перевод текста */}
         </button>
 
         {isVisible && (
@@ -94,7 +96,7 @@ const ExportCSV = ({ reportData, fileName }) => {
                 onMouseEnter={(e) => (e.target.style.background = "#f2f2f2")}
                 onMouseLeave={(e) => (e.target.style.background = "white")}
               >
-                {count === "Все" ? "All" : count}
+                {count === "Все" ? t('All') : count} {/* Перевод опций */}
               </div>
             ))}
           </div>
@@ -105,7 +107,7 @@ const ExportCSV = ({ reportData, fileName }) => {
         onClick={handleExport}
         style={{ padding: "8px 12px", background: "#007bff", color: "#fff", border: "none", borderRadius: 4 }}
       >
-        Export to Excel
+        {t('Export to Excel')} {/* Перевод кнопки */}
       </button>
     </div>
   );

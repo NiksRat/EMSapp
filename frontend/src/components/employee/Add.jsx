@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { fetchDepartments } from "../../utils/EmployeeHelper";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
 
 const Add = () => {
   const [departments, setDepartments] = useState([]);
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({});
   const navigate = useNavigate()
 
@@ -56,19 +59,19 @@ const Add = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 bg-white p-8 rounded-md shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Add New Employee</h2>
+      <h2 className="text-2xl font-bold mb-6">{t('Add New Employee')}</h2>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Name
+              {t('Name')}
             </label>
             <input
               type="text"
               name="name"
               onChange={handleChange}
-              placeholder="Insert Name"
+              placeholder={t('Insert Name')}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             />
@@ -77,13 +80,13 @@ const Add = () => {
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Email
+              {t('Email')}
             </label>
             <input
               type="email"
               name="email"
               onChange={handleChange}
-              placeholder="Insert Email"
+              placeholder={t('Insert Email')}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             />
@@ -92,13 +95,13 @@ const Add = () => {
           {/* Employee ID */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Employee ID
+              {t('Employee ID')}
             </label>
             <input
               type="text"
               name="employeeId"
               onChange={handleChange}
-              placeholder="Employee ID"
+              placeholder={t('Employee ID')}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             />
@@ -107,13 +110,13 @@ const Add = () => {
           {/* Date of Birth */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Date of Birth
+              {t('Date of Birth')}
             </label>
             <input
               type="date"
               name="dob"
               onChange={handleChange}
-              placeholder="DOB"
+              placeholder={t('DOB')}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             />
@@ -122,7 +125,7 @@ const Add = () => {
           {/* Gender */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Gender
+              {t('Gender')}
             </label>
             <select
               name="gender"
@@ -130,41 +133,41 @@ const Add = () => {
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
+              <option value="">{t('Select Gender')}</option>
+              <option value="male">{t('Male')}</option>
+              <option value="female">{t('Female')}</option>
+              <option value="other">{t('Other')}</option>
             </select>
           </div>
 
           {/* Marital Status */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Marital Status
+              {t('Marital Status')}
             </label>
             <select
               name="maritalStatus"
               onChange={handleChange}
-              placeholder="Marital Status"
+              placeholder={t('Marital Status')}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             >
-              <option value="">Select Status</option>
-              <option value="single">Single</option>
-              <option value="married">Married</option>
+              <option value="">{t('Select Status')}</option>
+              <option value="single">{t('Single')}</option>
+              <option value="married">{t('Married')}</option>
             </select>
           </div>
 
           {/* Designation */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Designation
+              {t('Designation')}
             </label>
             <input
               type="text"
               name="designation"
               onChange={handleChange}
-              placeholder="Designation"
+              placeholder={t('Designation')}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             />
@@ -173,7 +176,7 @@ const Add = () => {
           {/* Department */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Department
+              {t('Department')}
             </label>
             <select
               name="department"
@@ -181,7 +184,7 @@ const Add = () => {
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             >
-              <option value="">Select Department</option>
+              <option value="">{t('Select Department')}</option>
               {departments.map((dep) => (
                 <option key={dep._id} value={dep._id}>
                   {dep.dep_name}
@@ -193,13 +196,13 @@ const Add = () => {
           {/* Salary */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Salary
+              {t('Salary')}
             </label>
             <input
               type="number"
               name="salary"
               onChange={handleChange}
-              placeholder="Salary"
+              placeholder={t('Salary')}
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             />
@@ -208,7 +211,7 @@ const Add = () => {
           {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Password
+              {t('Password')}
             </label>
             <input
               type="password"
@@ -223,7 +226,7 @@ const Add = () => {
           {/* Role */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Role
+              {t('Role')}
             </label>
             <select
               name="role"
@@ -231,22 +234,22 @@ const Add = () => {
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             >
-              <option value="">Select Role</option>
-              <option value="admin">Admin</option>
-              <option value="employee">Employee</option>
+              <option value="">{t('Select Role')}</option>
+              <option value="admin">{t('Admin')}</option>
+              <option value="employee">{t('Employee')}</option>
             </select>
           </div>
 
           {/* Image Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Upload Image
+              {t('Upload Image')}
             </label>
             <input
               type="file"
               name="image"
               onChange={handleChange}
-              placeholder="Upload Image"
+              placeholder={t('Upload Image')}
               accept="image/*"
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
             />
@@ -257,7 +260,7 @@ const Add = () => {
           type="submit"
           className="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
         >
-          Add Employee
+          {t('Add Employee')}
         </button>
       </form>
     </div>

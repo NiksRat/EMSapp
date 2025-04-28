@@ -2,66 +2,70 @@ import React, { useState } from "react";
 import { useAuth } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const Add = () => {
-    const {user} = useAuth()
+  const { user } = useAuth();
+  const { t } = useTranslation(); // Initialize the translation hook
 
-    const [leave, setLeave] = useState({
-        userId: user._id,
-        startDate: "",
-    })
+  const [leave, setLeave] = useState({
+    userId: user._id,
+    startDate: "",
+  });
 
-    const navigate = useNavigate()
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-    
-      setLeave((prevState) => {
-        const updatedLeave = { ...prevState, [name]: value };
-    
-        if (name === "startDate" && updatedLeave.endDate) {
-          if (value >= updatedLeave.endDate) {
-            updatedLeave.endDate = ""; 
-          }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setLeave((prevState) => {
+      const updatedLeave = { ...prevState, [name]: value };
+
+      if (name === "startDate" && updatedLeave.endDate) {
+        if (value >= updatedLeave.endDate) {
+          updatedLeave.endDate = "";
         }
-    
-        return updatedLeave;
-      });
-    };
+      }
+
+      return updatedLeave;
+    });
+  };
+
   const today = new Date().toISOString().split("T")[0];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (leave.startDate === leave.endDate) {
-      return alert("Start Date and End Date cannot be the same");
+      return alert(t("startDateEndDateError")); // Use translation for the error message
     }
     try {
-        const response = await axios.post(
-          `http://localhost:5000/api/leave/add`,leave,
-          {
-            headers: {
-              "Authorization": `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          navigate(`/employee-dashboard/leaves/${user._id}`)
+      const response = await axios.post(
+        `http://localhost:5000/api/leave/add`,
+        leave,
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      } catch (error) {
-        if (error.response && !error.response.data.success) {
-          alert(error.response.data.error);
-        }
+      );
+      if (response.data.success) {
+        navigate(`/employee-dashboard/leaves/${user._id}`);
       }
-  }
+    } catch (error) {
+      if (error.response && !error.response.data.success) {
+        alert(error.response.data.error);
+      }
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto mt-10 bg-white p-8 rounded-md shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Request for Leave</h2>
+      <h2 className="text-2xl font-bold mb-6">{t("requestLeaveTitle")}</h2>
       <form onSubmit={handleSubmit}>
-        <div className=" flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Leave Type
+              {t("leaveType")}
             </label>
             <select
               name="leaveType"
@@ -69,17 +73,17 @@ const Add = () => {
               className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
               required
             >
-              <option value="">Select Department</option>
-              <option value="Sick Leave">Sick Leave</option>
-              <option value="Casual Leave">Casual Leave</option>
-              <option value="Annual Leave">Annual Leave</option>
+              <option value="">{t("selectDepartment")}</option>
+              <option value="Sick Leave">{t("sickLeave")}</option>
+              <option value="Casual Leave">{t("casualLeave")}</option>
+              <option value="Annual Leave">{t("annualLeave")}</option>
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* from date */}
+            {/* From Date */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                From Date
+                {t("fromDate")}
               </label>
               <input
                 type="date"
@@ -91,10 +95,10 @@ const Add = () => {
               />
             </div>
 
-            {/* to date */}
+            {/* To Date */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                To Date
+                {t("toDate")}
               </label>
               <input
                 type="date"
@@ -107,14 +111,14 @@ const Add = () => {
             </div>
           </div>
 
-          {/* description */}
+          {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Description
+              {t("description")}
             </label>
             <textarea
               name="reason"
-              placeholder="Reason"
+              placeholder={t("reasonPlaceholder")}
               onChange={handleChange}
               className="w-full border border-gray-300"
             ></textarea>
@@ -124,7 +128,7 @@ const Add = () => {
           type="submit"
           className="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
         >
-          Add Leave
+          {t("addLeaveButton")}
         </button>
       </form>
     </div>

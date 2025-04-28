@@ -4,12 +4,14 @@ import { useAuth } from '../../context/authContext';
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, LineElement, PointElement } from "chart.js";
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, LineElement, PointElement);
 
 const SummaryCard = () => {
   const { user } = useAuth();
   const [salaryData, setSalaryData] = useState(null);
+  const { t } = useTranslation(); // Хук для перевода
 
   useEffect(() => {
     const fetchSalaryData = async () => {
@@ -34,7 +36,7 @@ const SummaryCard = () => {
     labels: salaryData ? salaryData.map(salary => new Date(salary.payDate).toLocaleDateString()) : [],
     datasets: [
       {
-        label: 'Salary Trend',
+        label: t('Salary Trend'), // Перевод метки
         data: salaryData ? salaryData.map(salary => salary.netSalary) : [],
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -50,16 +52,16 @@ const SummaryCard = () => {
           <FaUser />
         </div>
         <div className="pl-4 py-1">
-          <p className="text-lg font-semibold">Welcome Back</p>
+          <p className="text-lg font-semibold">{t('Welcome Back')}</p> {/* Перевод текста */}
           <p className="text-xl font-bold">{user.name}</p>
         </div>
       </div>
       <div className="mt-6 bg-white p-4 rounded-lg shadow">
-        <h4 className="text-lg font-bold mb-2">Salary Growth/Decline</h4>
+        <h4 className="text-lg font-bold mb-2">{t('Salary Growth/Decline')}</h4> {/* Перевод заголовка */}
         {salaryData ? (
           <Line data={salaryTrendData} />
         ) : (
-          <p>Loading salary data...</p>
+          <p>{t('Loading salary data...')}</p>
         )}
       </div>
     </div>
