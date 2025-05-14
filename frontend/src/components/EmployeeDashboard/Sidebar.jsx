@@ -31,7 +31,7 @@ const Sidebar = () => {
           onClick={() => toggleLanguage(i18n)}  // Используем новую функцию для смены языка
           className="w-full bg-teal-500 py-2 rounded text-center mb-4 hover:bg-teal-600"
         >
-          {i18n.language === 'ru' ? 'Switch to English' : 'Переключить на русский'}
+          {i18n.language === 'ru' ? 'Переключить на английский' : 'Switch to Russian'}
         </button>
 
         <NavLink

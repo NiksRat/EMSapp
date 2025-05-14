@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/authContext";
+import { motion } from 'framer-motion';
 import {
   Document,
   Packer,
@@ -327,88 +328,91 @@ const View = () => {
       {filteredSalaries === null ? (
         <div>{t('loading')}</div>  
       ) : (
-        <div className="overflow-x-auto p-5">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold">{t('salaryHistory')}</h2>  
-          </div>
-          <div className="flex justify-end my-3 gap-3">
-            <input
-              type="date"
-              placeholder={t('startDate')}  
-              className="border px-2 rounded-md py-0.5 border-gray-300"
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <input
-              type="date"
-              placeholder={t('endDate')}  
-              className="border px-2 rounded-md py-0.5 border-gray-300"
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-            <button
-              className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-              onClick={filterSalaries}
-            >
-              {t('filter')}  
-            </button>
-          </div>
-  
-          {filteredSalaries.length > 0 ? (
-            <table className="w-full text-sm text-left text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 border border-gray-200">
-                <tr>
-                  <th className="px-6 py-3">{t('sno')}</th>  
-                  <th className="px-6 py-3">{t('empId')}</th>  
-                  <th className="px-6 py-3">{t('salary')}</th>  
-                  <th className="px-6 py-3">{t('allowance')}</th>  
-                  <th className="px-6 py-3">{t('deduction')}</th>  
-                  <th className="px-6 py-3">{t('total')}</th>  
-                  <th className="px-6 py-3">{t('payDate')}</th>  
-                  <th className="px-6 py-3">{t('export')}</th>  
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSalaries.map((salary) => (
-                  <tr
-                    key={salary._id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="px-6 py-3 font-semibold text-white">{sno++}</td>
-                    <td className="px-6 py-3 font-semibold text-white">{salary.employeeId.employeeId}</td>
-                    <td className="px-6 py-3 font-semibold text-white">{salary.basicSalary}</td>
-                    <td className="px-6 py-3 font-semibold text-white">{salary.allowances}</td>
-                    <td className="px-6 py-3 font-semibold text-white">{salary.deductions}</td>
-                    <td className="px-6 py-3 font-semibold text-white">{salary.netSalary}</td>
-                    <td className="px-6 py-3 font-semibold text-white">
-                      {new Date(salary.payDate).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-3 flex gap-2">
-                      <button
-                        className={`px-4 py-1 rounded text-white ${
-                          salary.netSalary > 0 ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
-                        }`}
-                        disabled={salary.netSalary <= 0}
-                        onClick={() => exportSalaryToWord(salary)}
-                      >
-                        {t('exportToWord')}  
-                      </button>
-                      <button
-                        className={`px-4 py-1 rounded text-white ${
-                          salary.netSalary > 0 ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 cursor-not-allowed"
-                        }`}
-                        disabled={salary.netSalary <= 0}
-                        onClick={() => exportLastSalary("pdf", salary)}
-                      >
-                        {t('exportToPDF')}  
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div>{t('noRecords')}</div>  // "Нет записей"
-          )}
-        </div>
+<div className="overflow-x-auto p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
+  <div className="text-center mb-6">
+    <h2 className="text-3xl font-semibold text-gray-800">{t('salaryHistory')}</h2>
+  </div>
+
+  <div className="flex flex-wrap justify-end gap-3 mb-6">
+    <input
+      type="date"
+      className="border px-3 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      onChange={(e) => setStartDate(e.target.value)}
+    />
+    <input
+      type="date"
+      className="border px-3 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      onChange={(e) => setEndDate(e.target.value)}
+    />
+    <button
+      className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md transition-colors"
+      onClick={filterSalaries}
+    >
+      {t('filter')}
+    </button>
+  </div>
+
+{filteredSalaries.length > 0 ? (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    <table className="w-full text-sm text-left text-gray-800">
+      <thead className="bg-blue-100 text-gray-700 uppercase text-xs">
+        <tr>
+          <th className="px-4 py-3">{t('sno')}</th>
+          <th className="px-4 py-3">{t('empId')}</th>
+          <th className="px-4 py-3">{t('salary')}</th>
+          <th className="px-4 py-3">{t('allowance')}</th>
+          <th className="px-4 py-3">{t('deduction')}</th>
+          <th className="px-4 py-3">{t('total')}</th>
+          <th className="px-4 py-3">{t('payDate')}</th>
+          <th className="px-4 py-3">{t('export')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredSalaries.map((salary, index) => (
+          <tr
+            key={salary._id}
+            className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+          >
+            <td className="px-4 py-3 font-medium">{index + 1}</td>
+            <td className="px-4 py-3">{salary.employeeId.employeeId}</td>
+            <td className="px-4 py-3">{salary.basicSalary}</td>
+            <td className="px-4 py-3">{salary.allowances}</td>
+            <td className="px-4 py-3">{salary.deductions}</td>
+            <td className="px-4 py-3 font-semibold text-green-600">{salary.netSalary}</td>
+            <td className="px-4 py-3">{new Date(salary.payDate).toLocaleDateString()}</td>
+            <td className="px-4 py-3 flex flex-wrap gap-2">
+              <button
+                className={`px-4 py-1 rounded text-white transition-colors ${
+                  salary.netSalary > 0 ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+                }`}
+                disabled={salary.netSalary <= 0}
+                onClick={() => exportSalaryToWord(salary)}
+              >
+                {t('exportToWord')}
+              </button>
+              <button
+                className={`px-4 py-1 rounded text-white transition-colors ${
+                  salary.netSalary > 0 ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 cursor-not-allowed"
+                }`}
+                disabled={salary.netSalary <= 0}
+                onClick={() => exportLastSalary("pdf", salary)}
+              >
+                {t('exportToPDF')}
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </motion.div>
+) : (
+    <div className="text-gray-500 text-center py-5">{t('noRecords')}</div>
+  )}
+</div>
       )}
     </>
   );  

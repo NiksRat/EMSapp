@@ -6,36 +6,43 @@ export const columns = [
     name: "🔢", // Icon for Serial No.
     selector: (row) => row.sno,
     width: "70px",
+    center: true,
   },
   {
     name: "🆔", // Icon for Card ID
     selector: (row) => row.employeeId,
     width: "110px",
+    center: true,
   },
   {
     name: "👤", // Icon for Name
     selector: (row) => row.name,
     width: "120px",
+    center: true,
   },
   {
     name: "🏷️", // Icon for Leave Type
     selector: (row) => row.leaveType,
     width: "140px",
+    center: true,
   },
   {
     name: "🏢", // Icon for Department
     selector: (row) => row.department,
     width: "150px",
+    center: true,
   },
   {
     name: "📅", // Icon for Days
     selector: (row) => row.days,
     width: "80px",
+    center: true,
   },
   {
     name: "✔️", // Icon for Status
     selector: (row) => row.status,
     width: "100px",
+    center: true,
   },
   {
     name: "⚙️", // Icon for Action (with buttons)

@@ -92,6 +92,7 @@ const salaryReport = async (req, res) => {
         result[date] = [];
       }
 
+
       result[date].push({
         employeeId: record.employeeId.employeeId,
         employeeName: record.employeeId.userId ? record.employeeId.userId.name : "N/A",

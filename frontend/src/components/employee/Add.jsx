@@ -92,20 +92,6 @@ const Add = () => {
             />
           </div>
 
-          {/* Employee ID */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              {t('Employee ID')}
-            </label>
-            <input
-              type="text"
-              name="employeeId"
-              onChange={handleChange}
-              placeholder={t('Employee ID')}
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-              required
-            />
-          </div>
 
           {/* Date of Birth */}
           <div>
@@ -237,6 +223,7 @@ const Add = () => {
               <option value="">{t('Select Role')}</option>
               <option value="admin">{t('Admin')}</option>
               <option value="employee">{t('Employee')}</option>
+              <option value="leader">{t('Leader')}</option>
             </select>
           </div>
 

@@ -32,7 +32,7 @@ const AdminSidebar = () => {
           onClick={() => toggleLanguage(i18n)}  // Используем новую функцию для смены языка
           className="w-full bg-teal-500 py-2 rounded text-center mb-4 hover:bg-teal-600"
         >
-          {i18n.language === 'ru' ? 'Switch to English' : 'Переключить на русский'}
+          {i18n.language === 'ru' ? 'Переключить на английский' : 'Switch to Russian'} 
         </button>
 
         <NavLink
@@ -118,7 +118,9 @@ const AdminSidebar = () => {
 
         <NavLink
           to="/admin-dashboard/setting"
-          className="flex items-center space-x-4 block py-2.5 px-4 rounded"
+          className={({ isActive }) =>
+            `${isActive ? "bg-teal-500" : ""} flex items-center space-x-4 block py-2.5 px-4 rounded`
+        }
         >
           <FaCogs />
           <span>{t('Settings')}</span>

@@ -18,6 +18,14 @@ const leaveSchema = new Schema({
   },
   appliedAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  hasValidMedicalNote: {
+    type: Boolean,
+    default: false
+  },
+  medicalNoteImage: {
+  type: String,
+  default: null,
+},
 });
 
 const Leave = mongoose.model("Leave", leaveSchema);

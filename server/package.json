@@ -26,6 +26,8 @@
     "path": "^0.12.7",
     "react-bootstrap": "^2.10.9",
     "react-i18next": "^15.5.1",
+    "sharp": "^0.34.1",
+    "tesseract.js": "^6.0.1",
     "xlsx": "^0.18.5"
   }
 }
