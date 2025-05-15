@@ -1,16 +1,26 @@
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { t, i18n } = useTranslation(); 
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState(null);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Загрузка сохранённых данных при монтировании
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +32,12 @@ const Login = () => {
       if (response.data.success) {
         login(response.data.user);
         localStorage.setItem("token", response.data.token);
+
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
 
         const role = response.data.user.role;
         if (role === "admin") {
@@ -44,8 +60,8 @@ const Login = () => {
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ru" : "en";
-    localStorage.setItem('appLanguage', newLang); // Сохраняем язык в localStorage
-    i18n.changeLanguage(newLang); // Меняем язык в i18n
+    localStorage.setItem("appLanguage", newLang);
+    i18n.changeLanguage(newLang);
   };
 
   return (
@@ -57,12 +73,11 @@ const Login = () => {
         {t('login')}
       </h2>
 
-      {/* Кнопка смены языка */}
-      <button 
-        onClick={toggleLanguage} 
+      <button
+        onClick={toggleLanguage}
         className="absolute top-5 right-5 bg-white text-teal-600 px-4 py-2 rounded shadow"
       >
-        {i18n.language === "en" ? "Русский" : "English"}
+        {i18n.language === "en" ? "Russian" : "Английский"}
       </button>
 
       <div className="border shadow p-6 w-80 bg-white">
@@ -77,6 +92,7 @@ const Login = () => {
               type="email"
               className="w-full px-3 py-2 border"
               placeholder={t('email')}
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -89,13 +105,19 @@ const Login = () => {
               type="password"
               className="w-full px-3 py-2 border"
               placeholder="*****"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
           <div className="mb-4 flex items-center justify-between">
             <label className="inline-flex items-center">
-              <input type="checkbox" className="form-checkbox" />
+              <input
+                type="checkbox"
+                className="form-checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               <span className="ml-2 text-gray-700">{t('remember')}</span>
             </label>
             <a href="#" className="text-teal-600">
@@ -105,7 +127,7 @@ const Login = () => {
           <div className="mb-4">
             <button
               type="submit"
-              className="w-full bg-teal-600 text-white py-2 "
+              className="w-full bg-teal-600 text-white py-2"
             >
               {t('login')}
             </button>
