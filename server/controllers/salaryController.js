@@ -47,7 +47,7 @@ const getSalary = async (req, res) => {
       const {id, role} = req.params;
       
       let salary
-      if(role === "admin" || role === "leader") {
+      if(role === "admin" || role === "leader" || role === "accountant") {
           salary = await Salary.find({employeeId: id}).populate('employeeId', 'employeeId')
       } else {
           const employee = await Employee.findOne({userId: id})

@@ -49,7 +49,16 @@ const Add = () => {
         }
       );
       if (response.data.success) {
+        const user = JSON.parse(localStorage.getItem("user")); 
+      if (user?.role === "admin") {
         navigate("/admin-dashboard/employees");
+      } else if (user?.role === "leader") {
+        navigate("/leader-dashboard/employees");
+      } else if (user?.role === "accountant") {
+        navigate("/accountant-dashboard/employees");
+      } else {
+        navigate("/"); 
+      }
       }
     } catch (error) {
       if (error.response && !error.response.data.success) {

@@ -11,6 +11,8 @@ const RootRedirect = () => {
       return <Navigate to="/admin-dashboard" />;
     case "leader":
       return <Navigate to="/leader-dashboard" />;
+    case "accountant":
+      return <Navigate to="/accountant-dashboard" />;
     default:
       return <Navigate to="/employee-dashboard" />;
   }

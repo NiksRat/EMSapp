@@ -177,9 +177,27 @@ const View = () => {
                   { text: t('Type of Deduction'), bold: true, fillColor: '#f0f0f0' }, // Translate the text
                   { text: t('Amount'), bold: true, fillColor: '#f0f0f0' }, // Translate the text
                 ],
-                ['оклад по дням', `${salary.basicSalary}`, '15 дн.', 'НДФЛ', `${salary.deductions}`],
-                ['за работу в выходные дни', `${salary.allowances}`, '1 день', '', ''],
-                ['отпускные', '0.00', '5 дн.', '', ''],
+                [
+  t('Salary by days'), // вместо 'оклад по дням'
+  `${salary.basicSalary}`,
+  '15 ' + t('days'),   // вместо '15 дн.'
+  t('Income tax'),     // вместо 'НДФЛ'
+  `${salary.deductions}`
+],
+[
+  t('Weekend work'),   // вместо 'за работу в выходные дни'
+  `${salary.allowances}`,
+  '1 ' + t('day'),     // вместо '1 день'
+  '',
+  ''
+],
+[
+  t('Vacation'),       // вместо 'отпускные'
+  '0.00',
+  '5 ' + t('days'),    // вместо '5 дн.'
+  '',
+  ''
+],
                 [
                   { text: t('Total Income'), bold: true }, // Translate the text
                   { text: `${salary.basicSalary + salary.allowances}`, colSpan: 2, bold: true }, {}, 

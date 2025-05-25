@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SummaryCard from "../dashboard/SummaryCard";
+import SummaryCard from "./SummaryCardLead";
 import {
   FaUsers,
   FaBuilding,

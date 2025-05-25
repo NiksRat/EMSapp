@@ -89,7 +89,11 @@ export const EmployeeButtons = ({ Id }) => {
   const { t } = useTranslation();  // Translation hook
 
   // Base path depends on the role
-  const basePath = user?.role === "admin" ? "/admin-dashboard" : "/leader-dashboard";
+  let basePath;
+
+  if (user?.role === "admin") basePath = "/admin-dashboard";
+  else if (user?.role === "leader") basePath = "/leader-dashboard";
+  else if (user?.role === "accountant") basePath = "/accountant-dashboard";
 
   return (
     <div className="flex space-x-3">

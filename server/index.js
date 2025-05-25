@@ -10,6 +10,7 @@ import attendanceRouter from './routes/attendance.js'
 import dashboardRouter from './routes/dashboard.js'
 import connectToDatabase from './db/db.js'
 import leaderRouter from './routes/leader.js'
+import accontantRouter from './routes/accountant.js'
 import path from 'path'
 import { fileURLToPath } from 'url';
 
@@ -31,6 +32,7 @@ app.use('/api/setting', settingRouter)
 app.use('/api/attendance', attendanceRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/leader', leaderRouter)
+app.use('/api/accountant', accontantRouter)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is Running on port ${process.env.PORT}`)

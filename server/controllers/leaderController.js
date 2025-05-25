@@ -12,39 +12,39 @@ export const getLeaderSummary = async (req, res) => {
       { $group: { _id: null, totalSalary: { $sum: "$netSalary" } } }
     ]);
 
-    const averageSalaryByDepartment = await Employee.aggregate([
-      {
-        $lookup: {
-          from: "salaries",
-          localField: "_id",
-          foreignField: "employeeId",
-          as: "salaryData"
-        }
-      },
-      { $unwind: "$salaryData" },
-      {
-        $group: {
-          _id: "$departmentId",
-          averageSalary: { $avg: "$salaryData.netSalary" }
-        }
-      },
-      {
-        $lookup: {
-          from: "departments",
-          localField: "_id",
-          foreignField: "_id",
-          as: "departmentInfo"
-        }
-      },
-      { $unwind: "$departmentInfo" },
-      {
-        $project: {
-          _id: 0,
-          department: "$departmentInfo.name",
-          averageSalary: 1
-        }
-      }
-    ]);
+const averageSalaryByDepartment = await Employee.aggregate([
+  {
+    $lookup: {
+      from: "salaries",
+      localField: "_id",
+      foreignField: "employeeId",
+      as: "salaryData"
+    }
+  },
+  { $unwind: "$salaryData" },
+  {
+    $group: {
+      _id: "$department",
+      averageSalary: { $avg: "$salaryData.netSalary" }
+    }
+  },
+  {
+    $lookup: {
+      from: "departments",
+      localField: "_id",
+      foreignField: "_id",
+      as: "departmentInfo"
+    }
+  },
+  { $unwind: "$departmentInfo" },
+  {
+    $project: {
+      _id: 0,
+      department: "$departmentInfo.dep_name", // <== исправлено здесь
+      averageSalary: 1
+    }
+  }
+]);
 
     const employeeAppliedForLeave = await Leave.distinct('employeeId');
 

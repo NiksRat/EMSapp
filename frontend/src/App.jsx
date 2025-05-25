@@ -27,6 +27,9 @@ import LeaderDashboard from "./components/LeaderDashboard/LeaderDashboard";
 import LeaderSummary from "./components/LeaderDashboard/LeaderSummary";
 import LeaderComparison from "./components/LeaderDashboard/LeaderComparison";
 import RootRedirect from "./context/RootRedirect";
+import AccountantDashboard from "./components/AccountantDashboard/AccountantDashboard";
+import AccountantSummary from "./components/AccountantDashboard/AccountantSummary";
+import AccountantSalaryOverview from "./components/AccountantDashboard/AccountantSalaryOverview";
 
 
 function App() {
@@ -39,7 +42,7 @@ function App() {
           path="/admin-dashboard"
           element={
             <PrivateRoutes>
-              <RoleBaseRoutes requiredRole={["admin", "leader"]}>
+              <RoleBaseRoutes requiredRole={["admin", "leader", "accountant"]}>
                 <AdminDashboard />
               </RoleBaseRoutes>
             </PrivateRoutes>
@@ -141,6 +144,39 @@ function App() {
   <Route path="salary-report" element={<SalaryReport />} />
   <Route path="comparison" element={<LeaderComparison />} />
 </Route>
+
+<Route
+  path="/accountant-dashboard"
+  element={
+    <PrivateRoutes>
+      <RoleBaseRoutes requiredRole={["accountant"]}>
+        <AccountantDashboard />
+      </RoleBaseRoutes>
+    </PrivateRoutes>
+  }
+>
+  <Route index element={<AccountantSummary />} />
+  <Route path="employees" element={<List />} />
+  <Route path="add-employee" element={<Add />} />
+  <Route path="employees/:id" element={<View />} />
+  <Route path="employees/edit/:id" element={<Edit />} />
+  <Route path="employees/salary/:id" element={<ViewSalary />} />
+  <Route path="salary/add" element={<AddSalary />} />
+  <Route path="leaves" element={<Table />} />
+  <Route path="leaves/:id" element={<Detail />} />
+  <Route path="employees/leaves/:id" element={<LeaveList />} />
+  <Route path="setting" element={<Setting />} />
+  <Route path="attendance" element={<Attendance />} />
+  <Route path="attendance-report" element={<AttendanceReport />} />
+  <Route path="salary-report" element={<SalaryReport />} />
+  <Route path="salary-summary" element={<AccountantSalaryOverview />} />
+  <Route path="comparison" element={<LeaderComparison />} />
+    <Route
+            path="salary/add"
+            element={<AddSalary />}
+          ></Route>
+</Route>
+
       </Routes>
     </BrowserRouter>
   );
