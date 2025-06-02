@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/authContext";
 import { motion } from 'framer-motion';
+import * as XLSX from "xlsx";
 import {
   Document,
   Packer,
@@ -333,6 +334,41 @@ const View = () => {
     link.click();
     document.body.removeChild(link);
   };
+
+  const exportLastSalaryToExcel = (salary) => {
+  if (!salary) return;
+
+  const employee = salary.employeeId;
+  const payDate = new Date(salary.payDate).toLocaleDateString("ru-RU");
+
+  const data = [
+    [t("Employee"), employee2.userId?.name || "N/A"],
+    [t("Employee ID"), employee2.employeeId || "N/A"],
+    [t("Department"), employee2.department?.dep_name || "N/A"],
+    [t("Pay Date"), payDate],
+    [t("Basic Salary"), salary.basicSalary],
+    [t("Allowances"), salary.allowances],
+    [t("Deductions"), salary.deductions],
+    [t("Net Salary"), salary.netSalary],
+  ];
+
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Зарплата");
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+  });
+
+  saveAs(blob, `SalarySlip_${employee.employeeId}.xlsx`);
+};
+
   
   
 
@@ -421,6 +457,21 @@ const View = () => {
               >
                 {t('exportToPDF')}
               </button>
+ <button
+    onClick={() =>
+      exportLastSalaryToExcel(filteredSalaries[filteredSalaries.length - 1])
+    }
+    style={{
+      backgroundColor: "#17A2B8", 
+      color: "white",
+      padding: "10px 15px",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+    }}
+  >
+    {t("Export to Excel")}
+  </button>
             </td>
           </tr>
         ))}

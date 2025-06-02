@@ -366,5 +366,15 @@
   "Vacation": "Отпускные",
   "days": "дн.",
   "day": "день",
-    "salarySummary": "Данные по зарплате"
+    "salarySummary": "Данные по зарплате",
+      "Export to Excel": "Экспорт в Excel",
+        "Employee": "Сотрудник",
+  "Employee ID": "Табельный номер",
+  "Department": "Подразделение",
+  "Pay Date": "Дата выплаты",
+  "Basic Salary": "Оклад",
+  "Allowances": "Надбавки",
+  "Deductions": "Удержания",
+  "Net Salary": "Итого к выплате",
+  "Salary": "Зарплата"
 }

@@ -220,8 +220,8 @@
       "salary": "Salary",
       "totalIncome": "Total Income",
       "totalDeductions": "Total Deductions",
-      "exportToPDF": "exportToPDF",
-      "exportToWord": "exportToWord",
+      "exportToPDF": "Export to PDF",
+      "exportToWord": "Export to Word",
       "companyName": "OJSC 'MTZ",
       "requestLeaveTitle": "Request for Leave",
       "leaveType": "Leave Type",
@@ -362,5 +362,15 @@
   "Vacation": "Vacation",
   "days": "days",
   "day": "day",
-  "salarySummary": "Salary Summary"
+  "salarySummary": "Salary Summary",
+  "Export to Excel": "Export to Excel",
+  "Employee": "Employee",
+  "Employee ID": "Employee ID",
+  "Department": "Department",
+  "Pay Date": "Pay Date",
+  "Basic Salary": "Basic Salary",
+  "Allowances": "Allowances",
+  "Deductions": "Deductions",
+  "Net Salary": "Net Salary",
+  "Salary": "Salary"
 }

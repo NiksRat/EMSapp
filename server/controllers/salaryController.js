@@ -5,42 +5,60 @@ import Salary from '../models/Salary.js'
 import Employee from '../models/Employee.js'
 
 const addSalary = async (req, res) => {
-    try {
-        const {employeeId, basicSalary, allowances, deductions, payDate} = req.body
+  try {
+    const { employeeId, basicSalary, allowances, deductions, payDate } = req.body;
 
-        const basicSalaryNum = parseInt(basicSalary);
-        const allowancesNum = parseInt(allowances);
-        const deductionsNum = parseInt(deductions);
-    
-        // Проверка на NaN
-        if (isNaN(basicSalaryNum) || isNaN(allowancesNum) || isNaN(deductionsNum)) {
-          return res.status(400).json({ success: false, error: "Invalid input values" });
-        }
-    
-        const totalSalary = basicSalaryNum + allowancesNum - deductionsNum;
+    const basicSalaryNum = parseInt(basicSalary);
+    let allowancesNum = parseInt(allowances);
+    const deductionsNum = parseInt(deductions);
 
-        const newSalary = new Salary({
-            employeeId,
-            basicSalary,
-            allowances,
-            deductions,
-            netSalary: totalSalary,
-            payDate
-        })
-
-        await newSalary.save()
-
-        const populatedSalary = await Salary.findById(newSalary._id).populate({
-          path: 'employeeId',
-          select: 'name department',  
-        });
-
-        return res.status(200).json({success: true, salary: populatedSalary,})
-
-    } catch(error) {
-        return res.status(500).json({success: false, error: "salary add server error"})
+    if (isNaN(basicSalaryNum) || isNaN(allowancesNum) || isNaN(deductionsNum)) {
+      return res.status(400).json({ success: false, error: "Invalid input values" });
     }
-}
+
+    // Получение данных сотрудника
+    const employee = await Employee.findById(employeeId);
+    if (!employee) {
+      return res.status(404).json({ success: false, error: "Employee not found" });
+    }
+
+    // Расчёт налога (13%)
+    const tax = Math.round(basicSalaryNum * 0.13);
+
+    // Доп. выплаты, если женат
+    let marriageBonus = 0;
+    if (employee.maritalStatus && employee.maritalStatus.toLowerCase() === "married") {
+      marriageBonus = 500; // Можно изменить сумму
+    }
+
+    // Обновление надбавок с учётом брачного бонуса
+    allowancesNum += marriageBonus;
+
+    // Расчёт чистой зарплаты
+    const netSalary = basicSalaryNum + allowancesNum - deductionsNum - tax;
+
+    const newSalary = new Salary({
+      employeeId,
+      basicSalary: basicSalaryNum,
+      allowances: allowancesNum,
+      deductions: deductionsNum + tax, 
+      netSalary,
+      payDate
+    });
+
+    await newSalary.save();
+
+    const populatedSalary = await Salary.findById(newSalary._id).populate({
+      path: 'employeeId',
+      select: 'name department',
+    });
+
+    return res.status(200).json({ success: true, salary: populatedSalary });
+  } catch (error) {
+    console.error("Add Salary Error:", error);
+    return res.status(500).json({ success: false, error: "salary add server error" });
+  }
+};
 
 const getSalary = async (req, res) => {
   try {

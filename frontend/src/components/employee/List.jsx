@@ -93,14 +93,14 @@ const List = () => {
           className="px-4 py-0.5 border"
           onChange={handleFilter}
         />
-        {addEmployeePath && (
-          <Link
-            to={addEmployeePath}
-            className="px-4 py-1 bg-teal-600 rounded text-white"
-          >
-            {t('Add New Employee')}
-          </Link>
-        )}
+{role !== 'accountant' && addEmployeePath && (
+  <Link
+    to={addEmployeePath}
+    className="px-4 py-1 bg-teal-600 rounded text-white"
+  >
+    {t('Add New Employee')}
+  </Link>
+)}
       </div>
       <div className="mt-6">
         <DataTable columns={columns} data={filteredEmployee} pagination />
